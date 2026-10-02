@@ -5,21 +5,27 @@ import './ChatInput.css'
 export type ChatInputVariant = 'home' | 'chat'
 
 export interface ChatInputProps {
-  /** The HiFi sizes the Home and Chat inputs differently. */
   variant?: ChatInputVariant
-  /** Accessible name of the text field. */
   label?: string
   placeholder?: string
+  onSubmit?: (text: string) => void
+  autoFocus?: boolean
 }
 
 export function ChatInput({
   variant = 'home',
   label = 'Tulis pesan',
   placeholder,
+  onSubmit,
+  autoFocus,
 }: ChatInputProps) {
-  // Phase 1 is UI only: submitting must not reload the preview page.
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const form = event.currentTarget
+    const text = String(new FormData(form).get('message') ?? '').trim()
+    if (!text) return
+    onSubmit?.(text)
+    form.reset()
   }
 
   return (
@@ -34,6 +40,7 @@ export function ChatInput({
         aria-label={label}
         placeholder={placeholder}
         autoComplete="off"
+        autoFocus={autoFocus}
       />
       <SendButton />
     </form>

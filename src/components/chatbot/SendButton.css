@@ -1,11 +1,16 @@
 .idmc-send-button {
   position: relative;
   flex: none;
-  inline-size: 53px;
-  block-size: 53px;
+
+  inline-size: 44px;
+  block-size: 44px;
+
   padding: 0;
+  margin: 0;
+
   border: 0;
   border-radius: var(--idmc-radius-full);
+
   background: none;
   cursor: pointer;
 }
@@ -18,19 +23,19 @@
 .idmc-send-button__circle {
   position: absolute;
   inset: 0;
+
   display: block;
   inline-size: 100%;
   block-size: 100%;
+
   max-inline-size: none;
 }
 
 .idmc-send-button__icon {
   position: absolute;
+
   inset-inline-start: 50%;
-  /*
-   * Figma (nodes 1:20883 Home, 1:20929 Chat): the icon sits 1px above the
-   * circle's vertical center in both inputs.
-   */
   inset-block-start: calc(50% - 1px);
+
   transform: translate(-50%, -50%);
 }

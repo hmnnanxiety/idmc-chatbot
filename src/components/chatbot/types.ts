@@ -7,6 +7,12 @@ export interface ChatUser {
 
 export type MessageRole = 'user' | 'assistant'
 
+/** One row of the History view. Mock data only: nothing is persisted or restored yet. */
+export interface ChatHistoryItem {
+  id: string
+  title: string
+}
+
 export interface ChatMessage {
   id: string
   role: MessageRole

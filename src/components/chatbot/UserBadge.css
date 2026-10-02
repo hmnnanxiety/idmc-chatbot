@@ -1,6 +1,8 @@
 .idmc-user-badge {
   display: inline-flex;
-  flex: none;
+  /* Can shrink (name/role truncate) so the header fits the narrowest phones. */
+  flex: 0 1 auto;
+  min-inline-size: 0;
   align-items: center;
   gap: var(--idmc-space-1);
   /* Figma: 3px padding (not on the Spacing scale). */
@@ -21,10 +23,14 @@
 
 .idmc-user-badge__text {
   display: flex;
+  flex: 0 1 auto;
   flex-direction: column;
   justify-content: center;
+  min-inline-size: 0;
+  /* Figma: 129px wide; used as the preferred width, it only shrinks when space runs out. */
   inline-size: 129px;
   block-size: 34px;
+  overflow: hidden;
   white-space: nowrap;
 }
 
@@ -32,11 +38,15 @@
   margin: 0;
   /* Figma: the 3px negative margin keeps name + role centered in the 34px block. */
   margin-block-end: -3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   /* Figma: Bold 18/27. Not in the type scale (Body/B-1 is Medium 18/27). */
   font: 700 18px/27px var(--idmc-font-family);
 }
 
 .idmc-user-badge__role {
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font: var(--idmc-type-b5);
 }

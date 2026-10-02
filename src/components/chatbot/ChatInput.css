@@ -11,20 +11,21 @@
 /* Home (node 1:20880): 662 x 65, 10px side padding. */
 .idmc-chat-input--home {
   inline-size: 100%;
-  block-size: 65px;
-  padding: var(--idmc-space-1) 10px;
-  /* Figma: 25px radius (not on the Radius scale: 24 or 32). */
-  border-radius: 25px;
+  block-size: 56px;
+
+  padding: 6px 8px;
+
+  border-radius: var(--idmc-radius-full);
 }
 
 /* Chat (node 1:20926): 658 x 61, send button flush with the right edge. */
 .idmc-chat-input--chat {
-  inline-size: 658px;
-  max-inline-size: 100%;
-  block-size: 61px;
-  padding-block: var(--idmc-space-1);
-  padding-inline: 0;
-  border-radius: var(--idmc-radius-4);
+  inline-size: 100%;
+  block-size: 56px;
+
+  padding: 6px 8px;
+
+  border-radius: var(--idmc-radius-full);
 }
 
 /*

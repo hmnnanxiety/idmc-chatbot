@@ -6,7 +6,7 @@
   overflow: clip;
   border: 0;
   /* Figma: 63px radius (not on the Radius scale; Radius/full is 999px). */
-  border-radius: 63px;
+  border-radius: 44px;
   background: var(--idmc-color-neutral-100);
   cursor: pointer;
 }

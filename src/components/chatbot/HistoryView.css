@@ -1,0 +1,109 @@
+.idmc-history {
+  display: flex;
+  flex-direction: column;
+
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+
+  /* Same inset as the Conversation view so the header does not jump between views. */
+  padding: var(--idmc-space-3);
+
+  overflow: hidden;
+  background: var(--idmc-color-neutral-200);
+}
+
+.idmc-history__body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+
+  min-block-size: 0;
+  padding-block-start: var(--idmc-space-2);
+}
+
+/* "Recents": a quiet section label, not a heading competitor. */
+.idmc-history__label {
+  flex: none;
+
+  margin: 0;
+  padding: var(--idmc-space-1) var(--idmc-space-3);
+
+  color: var(--idmc-color-neutral-600);
+  font: var(--idmc-type-b4);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Only the list scrolls; the label stays put. */
+.idmc-history__list {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--idmc-space-0);
+
+  min-block-size: 0;
+  margin: 0;
+  padding: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+
+  list-style: none;
+}
+
+/* One conversation title per row: no card, border, icon or timestamp. */
+.idmc-history__item {
+  display: block;
+
+  inline-size: 100%;
+  padding: var(--idmc-space-2) var(--idmc-space-3);
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: var(--idmc-radius-2);
+  background: transparent;
+  color: var(--idmc-color-neutral-900);
+
+  font: var(--idmc-type-b3);
+  letter-spacing: 0;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.idmc-history__item:hover {
+  background: var(--idmc-color-neutral-300);
+}
+
+/* Current conversation: slightly stronger than hover. */
+.idmc-history__item[aria-current='true'],
+.idmc-history__item[aria-current='true']:hover {
+  background: var(--idmc-color-neutral-400);
+}
+
+/* Drawn inside the row so the scroll container never clips the ring. */
+.idmc-history__item:focus-visible {
+  outline: var(--idmc-stroke-1) solid var(--idmc-color-primary-500);
+  outline-offset: calc(-1 * var(--idmc-stroke-1));
+}
+
+.idmc-history__empty {
+  margin: 0;
+  padding: var(--idmc-space-4) var(--idmc-space-3);
+
+  color: var(--idmc-color-neutral-600);
+  font: var(--idmc-type-b3);
+  letter-spacing: 0;
+}
+
+@media (max-height: 520px) {
+  .idmc-history {
+    padding-block: var(--idmc-space-2);
+  }
+}

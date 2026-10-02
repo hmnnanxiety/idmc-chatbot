@@ -1,18 +1,33 @@
 .idmc-suggestion-chip {
   display: inline-flex;
-  flex: none;
+
+  /* Keep chips compact and on one line. */
+  flex: 0 0 auto;
+
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 6px 10px;
+  gap: 4px;
+
+  max-inline-size: max-content;
+
+  padding: 3px 7px;
+
   overflow: clip;
+
   border: 0;
-  border-radius: var(--idmc-radius-4);
+  border-radius: var(--idmc-radius-full);
+
   background: var(--idmc-color-primary-10-a10);
   color: var(--idmc-color-primary-700);
-  font: var(--idmc-type-b2);
+
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
   letter-spacing: 0;
+
+  text-align: center;
   white-space: nowrap;
+
   cursor: pointer;
 }
 

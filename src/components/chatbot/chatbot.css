@@ -14,4 +14,26 @@
   font: var(--idmc-type-b2);
   letter-spacing: 0;
   color-scheme: light;
+
+  /*
+   * Motion tokens. Figma defines no motion, so these are widget-local (not in
+   * design-system/tokens.css). The easing never overshoots: no bounce.
+   */
+  --idmc-motion-duration-fast: 140ms;
+  --idmc-motion-duration-base: 200ms;
+  --idmc-motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * Reduced motion: every animation and transition inside the widget is turned
+ * off, so elements render their final state immediately.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .idmc-chatbot,
+  .idmc-chatbot *,
+  .idmc-chatbot *::before,
+  .idmc-chatbot *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

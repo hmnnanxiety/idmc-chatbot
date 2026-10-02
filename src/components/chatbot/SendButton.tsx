@@ -14,7 +14,11 @@ export function SendButton({ label = 'Kirim pesan' }: SendButtonProps) {
     <button type="submit" className="idmc-send-button" aria-label={label}>
       <img className="idmc-send-button__circle" src={sendCircleSrc} alt="" />
       <span className="idmc-send-button__icon">
-        <Glyph src={sendIconSrc} size={35} inset="12.5% 8.34% 12.5% 8.33%" />
+        <Glyph
+          src={sendIconSrc}
+          size={22}
+          inset="12.5% 8.34% 12.5% 8.33%"
+        />
       </span>
     </button>
   )

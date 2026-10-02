@@ -1,39 +1,5 @@
-/* Local component showcase only. Not part of the chatbot widget itself. */
-.idmc-preview {
-  display: flex;
-  flex-direction: column;
-  gap: var(--idmc-space-8);
+/* Local host page only. Not part of the chatbot widget itself. */
+.idmc-host {
   min-block-size: 100vh;
-  padding: var(--idmc-space-6);
   background: var(--idmc-color-neutral-300);
-}
-
-.idmc-preview__section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--idmc-space-2);
-}
-
-.idmc-preview__label {
-  margin: 0;
-  color: var(--idmc-color-neutral-700);
-  font: var(--idmc-type-b3);
-}
-
-.idmc-preview__frame {
-  max-inline-size: 100%;
-  overflow: auto;
-  border: var(--idmc-stroke-0) solid var(--idmc-color-neutral-400);
-  box-shadow: var(--idmc-shadow-e2);
-}
-
-/* Frame sizes match the HiFi frames (sidebar excluded, so Home is the 1140px main page). */
-.idmc-preview__frame--home {
-  inline-size: 1140px;
-  block-size: 1078px;
-}
-
-.idmc-preview__frame--chat {
-  inline-size: 1440px;
-  block-size: 1080px;
 }

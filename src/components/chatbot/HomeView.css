@@ -1,29 +1,59 @@
-/* Home layout (node 1:20867): vertical auto-layout, 280px gap, 30/24px padding. */
 .idmc-home {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 280px;
+
+  inline-size: 100%;
   block-size: 100%;
-  /* Figma: 24px vertical / 30px horizontal padding (not on the Spacing scale). */
-  padding: var(--idmc-space-6) 30px;
-  overflow: auto;
+  min-block-size: 0;
+
+  padding: var(--idmc-space-4);
+
+  overflow: hidden;
   background: var(--idmc-color-neutral-200);
 }
 
 /*
- * Hero block (node 1:20876): fixed 222px tall, content centered vertically,
- * 662px wide, 13px gap between title, input, chips. The content (116 + 13 + 65
- * + 13 + 36) is taller than 222px, so it overflows equally top and bottom, as
- * in Figma.
+ * Flexible identity area.
+ * This uses the available space between the header and composer.
  */
-.idmc-home__hero {
+.idmc-home__main {
+  flex: 1 1 auto;
+  min-block-size: 0;
+
   display: flex;
+  align-items: center;
+
+  inline-size: 100%;
+}
+
+/*
+ * Starter prompts + composer stay anchored at the bottom.
+ */
+.idmc-home__composer-area {
   flex: none;
+
+  display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 13px;
-  inline-size: 662px;
-  max-inline-size: 100%;
-  block-size: 222px;
+  gap: 8px;
+
+  inline-size: 100%;
+}
+
+/* Compact mobile spacing. */
+@media (max-width: 600px) {
+  .idmc-home {
+    padding: var(--idmc-space-3);
+  }
+
+  .idmc-home__main {
+    align-items: center;
+  }
+}
+
+/* Short landscape screens: reduce the identity area naturally. */
+@media (max-height: 520px) {
+  .idmc-home__main {
+    align-items: flex-start;
+    padding-block-start: var(--idmc-space-3);
+  }
 }

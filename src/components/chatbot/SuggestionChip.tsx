@@ -11,7 +11,7 @@ export interface SuggestionChipProps {
 export function SuggestionChip({ label, onClick }: SuggestionChipProps) {
   return (
     <button type="button" className="idmc-suggestion-chip" onClick={onClick}>
-      <Glyph src={fileIconSrc} size={20} inset="8.33%" bleed="-4.5%" />
+      <Glyph src={fileIconSrc} size={14} inset="8.33%" bleed="-4.5%" />
       <span>{label}</span>
     </button>
   )

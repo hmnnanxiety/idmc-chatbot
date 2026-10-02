@@ -5,6 +5,16 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  /* Mounts once per message (stable keys), so earlier messages never replay it. */
+  animation: idmc-message-in var(--idmc-motion-duration-base) var(--idmc-motion-ease-out);
+}
+
+/* New message: short fade + 8px upward settle. */
+@keyframes idmc-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-2));
+  }
 }
 
 .idmc-message--user {
@@ -18,21 +28,28 @@
 /*
  * Figma bubbles are fixed 120px-tall empty boxes. Here the height follows the
  * content. Text style, color and padding are not in the HiFi; assumption:
- * Body/B-2, Neutral/900, Spacing/4.
+ * Body/B-2, Neutral/900, Spacing/4. The fixed 400/530px widths exceed the ~380px
+ * widget, so the 85% cap decides the width; it also keeps a gap on the side so
+ * user (right) and assistant (left) messages stay visually distinct.
  */
 .idmc-message__bubble {
-  inline-size: 400px;
-  max-inline-size: 100%;
-  padding: var(--idmc-space-4);
-  border-radius: var(--idmc-radius-4);
+  inline-size: fit-content;
+  max-inline-size: 78%;
+
+  padding: 11px 14px;
+
+  border-radius: 18px;
+
   background: var(--idmc-color-primary-100);
   color: var(--idmc-color-neutral-900);
+
   font: var(--idmc-type-b2);
   letter-spacing: 0;
+
   overflow-wrap: anywhere;
 }
 
 .idmc-message--assistant .idmc-message__bubble {
-  inline-size: 530px;
+  max-inline-size: 82%;
   background: var(--idmc-color-secondary-100);
 }

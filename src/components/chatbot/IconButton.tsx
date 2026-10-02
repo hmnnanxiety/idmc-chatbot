@@ -24,7 +24,7 @@ export function IconButton({
       aria-label={label}
       onClick={onClick}
     >
-      <Glyph src={iconSrc} size={47} inset={iconInset} />
+      <Glyph src={iconSrc} size={24} inset={iconInset} />
     </button>
   )
 }

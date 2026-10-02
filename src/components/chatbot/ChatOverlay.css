@@ -1,0 +1,118 @@
+/*
+ * Floating overlay layout. The launcher (closed) and the panel (open) are never
+ * on screen together and share ONE bottom-right anchor: the same
+ * inset-inline-end / inset-block-end, so the panel grows upward and leftward
+ * from the exact spot the launcher occupied, and closing returns the launcher
+ * to that spot. Both are `position: fixed`, so percentages resolve against the
+ * viewport. Sizes use the Spacing scale (Figma has no launcher / widget frame).
+ *
+ * Responsive ladder (viewport width / height):
+ *   > 800px    desktop, laptop   20px anchor, 380 x 600 compact panel
+ *   <= 800px   tablet            16px anchor, same compact panel
+ *   <= 600px   mobile            12px anchor, near-fullscreen panel, 48px launcher
+ *   <= 520px tall (landscape phones) 8px anchor, panel shrinks to the height
+ */
+.idmc-overlay {
+  --idmc-overlay-gutter: var(--idmc-space-5);
+  --idmc-overlay-launcher-size: var(--idmc-space-10);
+
+  /* Compact support-widget size: caps only; the viewport always wins. */
+  --idmc-overlay-panel-width: 380px;
+  --idmc-overlay-panel-height: 600px;
+
+  /* The anchor never goes below the device safe area (notches, home indicator). */
+  --idmc-overlay-inset-inline: max(
+    var(--idmc-overlay-gutter),
+    env(safe-area-inset-left, 0px),
+    env(safe-area-inset-right, 0px)
+  );
+  --idmc-overlay-inset-start: max(var(--idmc-overlay-gutter), env(safe-area-inset-top, 0px));
+  --idmc-overlay-inset-end: max(var(--idmc-overlay-gutter), env(safe-area-inset-bottom, 0px));
+}
+
+.idmc-overlay__panel {
+  position: fixed;
+  inset-inline-end: var(--idmc-overlay-inset-inline);
+  inset-block-end: var(--idmc-overlay-inset-end);
+  z-index: 1000;
+  inline-size: min(
+    var(--idmc-overlay-panel-width),
+    calc(100% - 2 * var(--idmc-overlay-inset-inline))
+  );
+  block-size: min(
+    var(--idmc-overlay-panel-height),
+    calc(100% - var(--idmc-overlay-inset-start) - var(--idmc-overlay-inset-end))
+  );
+  overflow: hidden;
+  border-radius: var(--idmc-radius-4);
+  background: var(--idmc-color-neutral-200);
+  box-shadow: var(--idmc-shadow-e3);
+  /* Grow from / shrink back into the launcher's corner. */
+  transform-origin: 100% 100%;
+  animation: idmc-panel-in var(--idmc-motion-duration-base) var(--idmc-motion-ease-out);
+}
+
+/* Mobile browsers: size against the dynamic viewport so the URL bar never hides the composer. */
+@supports (block-size: 100dvh) {
+  .idmc-overlay__panel {
+    block-size: min(
+      var(--idmc-overlay-panel-height),
+      calc(100dvh - var(--idmc-overlay-inset-start) - var(--idmc-overlay-inset-end))
+    );
+  }
+}
+
+/* Focus lands on the panel when it opens; draw the ring inside so it is not clipped. */
+.idmc-overlay__panel:focus-visible {
+  outline: var(--idmc-stroke-2) solid var(--idmc-color-primary-300);
+  outline-offset: calc(-1 * var(--idmc-stroke-2));
+}
+
+/* Open: short fade + 8px settle + tiny scale. The panel mounts on open, so this plays once. */
+@keyframes idmc-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-2)) scale(0.98);
+  }
+}
+
+/*
+ * Close: the same motion in reverse, a little quicker. The panel stays mounted
+ * until this ends (ChatOverlay listens for it), then the launcher takes over.
+ */
+.idmc-overlay__panel[data-state='closing'] {
+  animation: idmc-panel-out var(--idmc-motion-duration-fast) var(--idmc-motion-ease-out) forwards;
+  pointer-events: none;
+}
+
+@keyframes idmc-panel-out {
+  to {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-2)) scale(0.98);
+  }
+}
+
+/* Tablet: smaller anchor offset. */
+@media (max-width: 800px) {
+  .idmc-overlay {
+    --idmc-overlay-gutter: var(--idmc-space-4);
+  }
+}
+
+/* Mobile: near-fullscreen panel inside small safe gutters, compact launcher. */
+@media (max-width: 600px) {
+  .idmc-overlay {
+    --idmc-overlay-gutter: var(--idmc-space-3);
+    --idmc-overlay-launcher-size: var(--idmc-space-9);
+    --idmc-overlay-panel-width: 100%;
+    --idmc-overlay-panel-height: 100%;
+  }
+}
+
+/* Very short viewports (landscape phones): smallest anchor, panel fills the height. */
+@media (max-height: 520px) {
+  .idmc-overlay {
+    --idmc-overlay-gutter: var(--idmc-space-2);
+    --idmc-overlay-launcher-size: var(--idmc-space-9);
+  }
+}

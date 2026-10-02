@@ -1,0 +1,17 @@
+.idmc-glyph {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+.idmc-glyph__frame,
+.idmc-glyph__bleed {
+  position: absolute;
+}
+
+.idmc-glyph__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+}

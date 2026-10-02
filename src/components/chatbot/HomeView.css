@@ -1,0 +1,22 @@
+/* Home layout (node 1:20867): vertical auto-layout, 280px gap, 30/24px padding. */
+.idmc-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 280px;
+  block-size: 100%;
+  /* Figma: 24px vertical / 30px horizontal padding (not on the Spacing scale). */
+  padding: var(--idmc-space-6) 30px;
+  overflow: auto;
+  background: var(--idmc-color-neutral-200);
+}
+
+/* Hero block (node 1:20876): 662px wide, 13px gap between title, input, chips. */
+.idmc-home__hero {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 13px;
+  inline-size: 662px;
+  max-inline-size: 100%;
+}

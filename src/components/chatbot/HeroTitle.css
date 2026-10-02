@@ -1,0 +1,19 @@
+.idmc-hero-title {
+  margin: 0;
+  color: var(--idmc-color-primary-500);
+}
+
+/* Heading/H-1: Bold 68/102. */
+.idmc-hero-title__heading {
+  margin: 0;
+  font: var(--idmc-type-h1);
+  letter-spacing: 0;
+}
+
+/* Body/B-1: Medium 18/27. Figma overlaps it 13px into the heading's line box. */
+.idmc-hero-title__tagline {
+  margin: 0;
+  margin-block-start: -13px;
+  font: var(--idmc-type-b1);
+  letter-spacing: 0;
+}

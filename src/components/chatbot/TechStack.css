@@ -1,0 +1,46 @@
+.idmc-tech-stack {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 10px;
+  inline-size: 100%;
+  /* Figma: 22px / 10px padding (not on the Spacing scale). */
+  padding: 22px 10px;
+  /* Figma: 17px radius (not on the Radius scale: 16 or 20). */
+  border-radius: 17px;
+  background: var(--idmc-color-neutral-200);
+}
+
+/* Body/B-2: Regular 16/24. */
+.idmc-tech-stack__title {
+  margin: 0;
+  color: var(--idmc-color-primary-500);
+  font: var(--idmc-type-b2);
+  letter-spacing: 0;
+}
+
+.idmc-tech-stack__list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.idmc-tech-stack__item {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 80px;
+  block-size: 80px;
+  margin: 0;
+  overflow: clip;
+  border-radius: var(--idmc-radius-3);
+  background: var(--idmc-color-neutral-100);
+}
+
+.idmc-tech-stack__logo {
+  display: block;
+  object-fit: cover;
+}

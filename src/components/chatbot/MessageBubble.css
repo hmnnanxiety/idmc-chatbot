@@ -1,0 +1,38 @@
+.idmc-message {
+  display: flex;
+  flex: none;
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.idmc-message--user {
+  justify-content: flex-end;
+}
+
+.idmc-message--assistant {
+  justify-content: flex-start;
+}
+
+/*
+ * Figma bubbles are fixed 120px-tall empty boxes. Here the height follows the
+ * content. Text style, color and padding are not in the HiFi; assumption:
+ * Body/B-2, Neutral/900, Spacing/4.
+ */
+.idmc-message__bubble {
+  inline-size: 400px;
+  max-inline-size: 100%;
+  padding: var(--idmc-space-4);
+  border-radius: var(--idmc-radius-4);
+  background: var(--idmc-color-primary-100);
+  color: var(--idmc-color-neutral-900);
+  font: var(--idmc-type-b2);
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.idmc-message--assistant .idmc-message__bubble {
+  inline-size: 530px;
+  background: var(--idmc-color-secondary-100);
+}

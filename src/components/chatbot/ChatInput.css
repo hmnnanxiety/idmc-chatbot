@@ -1,0 +1,54 @@
+.idmc-chat-input {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0;
+  overflow: clip;
+  background: var(--idmc-color-neutral-100);
+}
+
+/* Home (node 1:20880): 662 x 65, 10px side padding. */
+.idmc-chat-input--home {
+  inline-size: 100%;
+  block-size: 65px;
+  padding: var(--idmc-space-1) 10px;
+  /* Figma: 25px radius (not on the Radius scale: 24 or 32). */
+  border-radius: 25px;
+}
+
+/* Chat (node 1:20926): 658 x 61, send button flush with the right edge. */
+.idmc-chat-input--chat {
+  inline-size: 658px;
+  max-inline-size: 100%;
+  block-size: 61px;
+  padding-block: var(--idmc-space-1);
+  padding-inline: 0;
+  border-radius: var(--idmc-radius-4);
+}
+
+/*
+ * The HiFi field is an empty white area, so text styling is not specified.
+ * Assumption: Body/B-2, Neutral/900, Spacing/5 side padding.
+ */
+.idmc-chat-input__field {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-inline-size: 0;
+  padding-inline: var(--idmc-space-5);
+  border: 0;
+  background: transparent;
+  color: var(--idmc-color-neutral-900);
+  font: var(--idmc-type-b2);
+  letter-spacing: 0;
+  outline: 0;
+}
+
+.idmc-chat-input__field::placeholder {
+  color: var(--idmc-color-neutral-500);
+}
+
+.idmc-chat-input:focus-within {
+  outline: var(--idmc-stroke-1) solid var(--idmc-color-primary-300);
+  outline-offset: -2px;
+}

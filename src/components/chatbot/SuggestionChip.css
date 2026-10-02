@@ -1,0 +1,22 @@
+.idmc-suggestion-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 10px;
+  overflow: clip;
+  border: 0;
+  border-radius: var(--idmc-radius-4);
+  background: var(--idmc-color-primary-10-a10);
+  color: var(--idmc-color-primary-700);
+  font: var(--idmc-type-b2);
+  letter-spacing: 0;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.idmc-suggestion-chip:focus-visible {
+  outline: var(--idmc-stroke-1) solid var(--idmc-color-primary-500);
+  outline-offset: var(--idmc-stroke-1);
+}

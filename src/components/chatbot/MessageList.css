@@ -1,0 +1,17 @@
+/* Chat panel (node 1:20916): white, 16px radius, 16/25px padding, 10px gap. */
+.idmc-message-list {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  inline-size: 100%;
+  min-block-size: 0;
+  margin: 0;
+  /* Figma: 25px vertical padding (not on the Spacing scale). */
+  padding: 25px var(--idmc-space-4);
+  overflow-y: auto;
+  border-radius: var(--idmc-radius-4);
+  background: var(--idmc-color-neutral-100);
+  list-style: none;
+}

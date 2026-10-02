@@ -1,0 +1,18 @@
+.idmc-top-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  inline-size: 100%;
+}
+
+/* Home (node 1:20868): 10px gap, no vertical padding. */
+.idmc-top-bar--home {
+  gap: 10px;
+}
+
+/* Chat (node 1:20908): 20px gap, 15px vertical padding. */
+.idmc-top-bar--chat {
+  gap: 20px;
+  padding-block: 15px;
+}

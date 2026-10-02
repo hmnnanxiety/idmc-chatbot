@@ -1,0 +1,98 @@
+/*
+ * IDMC Chatbot design tokens.
+ *
+ * Source: Figma "Frontend Dev IDMC Chatbot" > Design System
+ *   - Color            (node 1:3849)
+ *   - Variable System  (node 1:4230): Radius, Stroke, Spacing, Shadow
+ * Names mirror the Figma variable paths, e.g. Primary/500 -> --idmc-color-primary-500.
+ * Values are copied as-is from Figma; nothing here is invented.
+ */
+:root {
+  /* Color / Primary */
+  --idmc-color-primary-10: #da1717;
+  --idmc-color-primary-100: #fbd7cc;
+  --idmc-color-primary-200: #f8a79a;
+  --idmc-color-primary-300: #eb6c66;
+  --idmc-color-primary-400: #d83f47;
+  --idmc-color-primary-500: #bf0b25;
+  --idmc-color-primary-600: #a4082d;
+  --idmc-color-primary-700: #890531;
+
+  /* Color / Secondary */
+  --idmc-color-secondary-10: #d16e05;
+  --idmc-color-secondary-100: #fff3cf;
+  --idmc-color-secondary-200: #fee1a0;
+  --idmc-color-secondary-300: #f5c76b;
+  --idmc-color-secondary-400: #e7a943;
+  --idmc-color-secondary-500: #d68200;
+  --idmc-color-secondary-600: #9a4e00;
+  --idmc-color-secondary-700: #692900;
+
+  /* Color / Neutral */
+  --idmc-color-neutral-100: #ffffff;
+  --idmc-color-neutral-200: #f5f5f5;
+  --idmc-color-neutral-300: #e5e5e5;
+  --idmc-color-neutral-400: #d4d4d4;
+  --idmc-color-neutral-500: #a3a3a3;
+  --idmc-color-neutral-600: #737373;
+  --idmc-color-neutral-700: #525252;
+  --idmc-color-neutral-800: #404040;
+  --idmc-color-neutral-900: #262626;
+  --idmc-color-neutral-1000: #171717;
+
+  /* Color / Status */
+  --idmc-color-red-10: #fb3748;
+  --idmc-color-red-100: #fb3748;
+  --idmc-color-red-200: #d00416;
+  --idmc-color-yellow-10: #dfb400;
+  --idmc-color-yellow-100: #ffdb43;
+  --idmc-color-yellow-200: #dfb400;
+  --idmc-color-green-10: #1fc16b;
+  --idmc-color-green-100: #84ebb4;
+  --idmc-color-green-200: #1fc16b;
+
+  /* Color / Primary / Purple Blue 500 - defined in Figma, not used by the HiFi */
+  --idmc-color-purple-blue-500: #4318ff;
+
+  /*
+   * Derived: Primary/10 at 10% opacity. The HiFi suggestion chip fills with
+   * rgba(218, 23, 23, 0.1), which is this exact color and alpha.
+   */
+  --idmc-color-primary-10-a10: rgb(218 23 23 / 10%);
+
+  /* Radius (Variable System > Radius) */
+  --idmc-radius-none: 0;
+  --idmc-radius-1: 4px;
+  --idmc-radius-2: 8px;
+  --idmc-radius-3: 12px;
+  --idmc-radius-4: 16px;
+  --idmc-radius-5: 20px;
+  --idmc-radius-6: 24px;
+  --idmc-radius-7: 32px;
+  --idmc-radius-full: 999px;
+
+  /* Stroke (Variable System > Stroke) */
+  --idmc-stroke-0: 1px;
+  --idmc-stroke-1: 2px;
+  --idmc-stroke-2: 4px;
+  --idmc-stroke-3: 6px;
+
+  /* Spacing (Variable System > Spacing) */
+  --idmc-space-0: 2px;
+  --idmc-space-1: 4px;
+  --idmc-space-2: 8px;
+  --idmc-space-3: 12px;
+  --idmc-space-4: 16px;
+  --idmc-space-5: 20px;
+  --idmc-space-6: 24px;
+  --idmc-space-7: 32px;
+  --idmc-space-8: 40px;
+  --idmc-space-9: 48px;
+  --idmc-space-10: 56px;
+
+  /* Shadow / Effects (offset-x offset-y blur spread color) */
+  --idmc-shadow-e0: 0 0 0 0 #1b1c1d00;
+  --idmc-shadow-e1: 0 2px 4px 0 #1b1c1d0a;
+  --idmc-shadow-e2: 0 16px 32px -12px #585c5f1a;
+  --idmc-shadow-e3: 0 16px 40px -8px #585c5f29;
+}

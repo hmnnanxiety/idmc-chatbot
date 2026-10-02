@@ -1,0 +1,22 @@
+/* Chat layout (node 1:20907): top bar, flexible message panel, composer row. */
+.idmc-conversation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  block-size: 100%;
+  /* Figma: 24px vertical / 30px horizontal padding (not on the Spacing scale). */
+  padding: var(--idmc-space-6) 30px;
+  background: var(--idmc-color-neutral-200);
+}
+
+/* Composer row (node 1:20925): 82px tall, input centered. */
+.idmc-conversation__composer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 82px;
+  border-radius: var(--idmc-radius-4);
+}

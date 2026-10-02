@@ -1,0 +1,17 @@
+/*
+ * Scope for every chatbot view. Components assume they render inside an
+ * `.idmc-chatbot` root (box-sizing and font come from here), so no global
+ * element selectors are needed.
+ */
+.idmc-chatbot,
+.idmc-chatbot *,
+.idmc-chatbot *::before,
+.idmc-chatbot *::after {
+  box-sizing: border-box;
+}
+
+.idmc-chatbot {
+  font: var(--idmc-type-b2);
+  letter-spacing: 0;
+  color-scheme: light;
+}

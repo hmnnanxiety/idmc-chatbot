@@ -27,6 +27,10 @@
 .idmc-send-button__icon {
   position: absolute;
   inset-inline-start: 50%;
-  inset-block-start: calc(50% - 0.5px);
+  /*
+   * Figma (nodes 1:20883 Home, 1:20929 Chat): the icon sits 1px above the
+   * circle's vertical center in both inputs.
+   */
+  inset-block-start: calc(50% - 1px);
   transform: translate(-50%, -50%);
 }

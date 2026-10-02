@@ -11,12 +11,19 @@
   background: var(--idmc-color-neutral-200);
 }
 
-/* Hero block (node 1:20876): 662px wide, 13px gap between title, input, chips. */
+/*
+ * Hero block (node 1:20876): fixed 222px tall, content centered vertically,
+ * 662px wide, 13px gap between title, input, chips. The content (116 + 13 + 65
+ * + 13 + 36) is taller than 222px, so it overflows equally top and bottom, as
+ * in Figma.
+ */
 .idmc-home__hero {
   display: flex;
   flex: none;
   flex-direction: column;
+  justify-content: center;
   gap: 13px;
   inline-size: 662px;
   max-inline-size: 100%;
+  block-size: 222px;
 }

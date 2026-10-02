@@ -5,10 +5,10 @@
   justify-content: space-between;
 
   inline-size: 100%;
-  min-block-size: 44px;
+  min-block-size: var(--idmc-header-height);
 
   padding: 0;
-  gap: var(--idmc-space-2);
+  gap: var(--idmc-header-gap);
 }
 
 /* Left group: optional leading control (back) + compact title, vertically centered with the buttons. */
@@ -16,12 +16,12 @@
   display: flex;
   flex: 0 1 auto;
   align-items: center;
-  gap: var(--idmc-space-2);
+  gap: var(--idmc-header-gap);
 
   min-inline-size: 0;
 }
 
-/* Compact title: Body/B-1 size in bold, so it stays readable without eating height. */
+/* Compact title (shared by "Chatbot Data Publik" and "Riwayat Chat"): Body/B-1 size in bold. */
 .idmc-top-bar__title {
   min-inline-size: 0;
   margin: 0;
@@ -41,14 +41,7 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--idmc-space-2);
+  gap: var(--idmc-header-gap);
 
   margin-inline-start: auto;
-}
-
-/* Landscape / short viewport */
-@media (max-height: 520px) {
-  .idmc-top-bar {
-    min-block-size: 40px;
-  }
 }

@@ -10,7 +10,7 @@
   min-block-size: 0;
 
   margin: 0;
-  padding: var(--idmc-space-3) 0 var(--idmc-space-4);
+  padding: var(--idmc-content-gap) 0 var(--idmc-space-4);
 
   overflow-x: hidden;
   overflow-y: auto;

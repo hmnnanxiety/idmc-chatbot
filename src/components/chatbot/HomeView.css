@@ -1,16 +1,4 @@
-.idmc-home {
-  display: flex;
-  flex-direction: column;
-
-  inline-size: 100%;
-  block-size: 100%;
-  min-block-size: 0;
-
-  padding: var(--idmc-space-4);
-
-  overflow: hidden;
-  background: var(--idmc-color-neutral-200);
-}
+/* Shell (padding, background, sizing) comes from the shared `.idmc-view` in chatbot.css. */
 
 /*
  * Flexible identity area.
@@ -24,30 +12,6 @@
   align-items: center;
 
   inline-size: 100%;
-}
-
-/*
- * Starter prompts + composer stay anchored at the bottom.
- */
-.idmc-home__composer-area {
-  flex: none;
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  inline-size: 100%;
-}
-
-/* Compact mobile spacing. */
-@media (max-width: 600px) {
-  .idmc-home {
-    padding: var(--idmc-space-3);
-  }
-
-  .idmc-home__main {
-    align-items: center;
-  }
 }
 
 /* Short landscape screens: reduce the identity area naturally. */

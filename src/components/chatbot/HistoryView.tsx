@@ -21,7 +21,7 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
   const labelId = useId()
 
   return (
-    <section className="idmc-chatbot idmc-history" aria-label="Riwayat chat">
+    <section className="idmc-chatbot idmc-view idmc-history" aria-label="Riwayat chat">
       <TopBar
         leading={
           <IconButton label="Kembali" iconSrc={backIconSrc} iconInset="8.33%" onClick={onBack} />

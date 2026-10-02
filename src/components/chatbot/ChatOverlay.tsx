@@ -4,7 +4,7 @@ import { ChatLauncher } from './ChatLauncher'
 import { ConversationView } from './ConversationView'
 import { HistoryView } from './HistoryView'
 import { HomeView } from './HomeView'
-import type { ChatHistoryItem, ChatMessage, ChatUser } from './types'
+import type { ChatHistoryItem, ChatMessage, ChatUser, MessageRole } from './types'
 import './chatbot.css'
 import './ChatOverlay.css'
 
@@ -24,6 +24,8 @@ export interface ChatOverlayProps {
   suggestions: string[]
   /** Mock list for the History view. Omit or pass [] to see the empty state. */
   historyItems?: ChatHistoryItem[]
+  /** Shows the typing indicator in the Conversation view. UI plumbing only: the host owns this state. */
+  isAssistantLoading?: boolean
 }
 
 /**
@@ -35,7 +37,12 @@ export interface ChatOverlayProps {
  * There is no backend yet, so submitted text is only shown as the user's own
  * message.
  */
-export function ChatOverlay({ user, suggestions, historyItems = [] }: ChatOverlayProps) {
+export function ChatOverlay({
+  user,
+  suggestions,
+  historyItems = [],
+  isAssistantLoading = false,
+}: ChatOverlayProps) {
   const [phase, setPhase] = useState<OverlayPhase>('closed')
   const [view, setView] = useState<ChatView>('home')
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -64,14 +71,14 @@ export function ChatOverlay({ user, suggestions, historyItems = [] }: ChatOverla
     else setPhase((current) => (current === 'open' ? 'closing' : current))
   }, [finishClose])
 
-  const addUserMessage = (text: string) => {
+  const appendMessage = (role: MessageRole, text: string) => {
     const id = `m${nextMessageId.current++}`
-    setMessages((previous) => [...previous, { id, role: 'user', text }])
+    setMessages((previous) => [...previous, { id, role, text }])
   }
 
   // Home submit or suggestion click: record the text and switch to Conversation.
   const startConversation = (text: string) => {
-    addUserMessage(text)
+    appendMessage('user', text)
     setView('chat')
   }
 
@@ -151,7 +158,8 @@ export function ChatOverlay({ user, suggestions, historyItems = [] }: ChatOverla
             <ConversationView
               user={user}
               messages={messages}
-              onSend={addUserMessage}
+              isAssistantLoading={isAssistantLoading}
+              onSend={(text) => appendMessage('user', text)}
               onOpenHistory={openHistory}
               onClose={requestClose}
             />

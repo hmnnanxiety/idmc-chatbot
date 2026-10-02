@@ -1,8 +1,15 @@
 .idmc-icon-button {
   display: inline-flex;
   flex: none;
-  /* Figma: 3px padding (not on the Spacing scale). */
-  padding: 3px;
+  align-items: center;
+  justify-content: center;
+  /*
+   * Size comes from the shared header token: the 24px Figma icon box plus Figma's
+   * 3px padding on every side (3px is not on the Spacing scale).
+   */
+  inline-size: var(--idmc-header-action-size);
+  block-size: var(--idmc-header-action-size);
+  padding: 0;
   overflow: clip;
   border: 0;
   /* Figma: 63px radius (not on the Radius scale; Radius/full is 999px). */

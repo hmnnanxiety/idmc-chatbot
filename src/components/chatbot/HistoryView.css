@@ -1,17 +1,4 @@
-.idmc-history {
-  display: flex;
-  flex-direction: column;
-
-  inline-size: 100%;
-  block-size: 100%;
-  min-block-size: 0;
-
-  /* Same inset as the Conversation view so the header does not jump between views. */
-  padding: var(--idmc-space-3);
-
-  overflow: hidden;
-  background: var(--idmc-color-neutral-200);
-}
+/* Shell (padding, background, sizing) comes from the shared `.idmc-view` in chatbot.css. */
 
 .idmc-history__body {
   display: flex;
@@ -19,7 +6,7 @@
   flex-direction: column;
 
   min-block-size: 0;
-  padding-block-start: var(--idmc-space-2);
+  padding-block-start: var(--idmc-content-gap);
 }
 
 /* "Recents": a quiet section label, not a heading competitor. */
@@ -100,10 +87,4 @@
   color: var(--idmc-color-neutral-600);
   font: var(--idmc-type-b3);
   letter-spacing: 0;
-}
-
-@media (max-height: 520px) {
-  .idmc-history {
-    padding-block: var(--idmc-space-2);
-  }
 }

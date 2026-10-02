@@ -1,17 +1,5 @@
+/* Shell (padding, background, sizing) comes from the shared `.idmc-view` in chatbot.css. */
 .idmc-conversation {
-  display: flex;
-  flex-direction: column;
-
-  inline-size: 100%;
-  block-size: 100%;
-  min-block-size: 0;
-
-  padding: var(--idmc-space-3);
-
-  overflow: hidden;
-
-  background: var(--idmc-color-neutral-200);
-
   animation:
     idmc-view-in
     var(--idmc-motion-duration-base)
@@ -25,29 +13,13 @@
   }
 }
 
-.idmc-conversation__composer {
-  flex: none;
-
-  display: flex;
-  align-items: center;
-
-  inline-size: 100%;
-
-  padding-block-start: var(--idmc-space-2);
-}
-
-@media (max-width: 600px) {
-  .idmc-conversation {
-    padding: var(--idmc-space-3);
-  }
+/* The composer sits directly under the message list, so it gets the content gap above it. */
+.idmc-conversation__footer {
+  padding-block-start: var(--idmc-content-gap);
 }
 
 @media (max-height: 520px) {
-  .idmc-conversation {
-    padding-block: var(--idmc-space-2);
-  }
-
-  .idmc-conversation__composer {
+  .idmc-conversation__footer {
     padding-block-start: var(--idmc-space-1);
   }
 }

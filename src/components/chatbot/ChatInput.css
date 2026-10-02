@@ -1,31 +1,21 @@
+/*
+ * Shared composer geometry for both variants. Home (node 1:20880, 662 x 65) and
+ * Chat (node 1:20926, 658 x 61) resolve to the same 56px pill here; the height is
+ * the shared `--idmc-composer-height` token. The 44px send button sits inside
+ * 6px / 8px padding. `--home` / `--chat` stay as hooks for variant-only tweaks.
+ */
 .idmc-chat-input {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: flex-end;
+  inline-size: 100%;
+  block-size: var(--idmc-composer-height);
   margin: 0;
+  padding: 6px 8px;
   overflow: clip;
+  border-radius: var(--idmc-radius-full);
   background: var(--idmc-color-neutral-100);
-}
-
-/* Home (node 1:20880): 662 x 65, 10px side padding. */
-.idmc-chat-input--home {
-  inline-size: 100%;
-  block-size: 56px;
-
-  padding: 6px 8px;
-
-  border-radius: var(--idmc-radius-full);
-}
-
-/* Chat (node 1:20926): 658 x 61, send button flush with the right edge. */
-.idmc-chat-input--chat {
-  inline-size: 100%;
-  block-size: 56px;
-
-  padding: 6px 8px;
-
-  border-radius: var(--idmc-radius-full);
 }
 
 /*

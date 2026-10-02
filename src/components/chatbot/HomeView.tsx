@@ -28,7 +28,7 @@ export function HomeView({
   onOpenHistory,
 }: HomeViewProps) {
   return (
-    <section className="idmc-chatbot idmc-home" aria-label="Beranda">
+    <section className="idmc-chatbot idmc-view idmc-home" aria-label="Beranda">
       <TopBar actions={<TopBarActions onOpenHistory={onOpenHistory} onClose={onClose} />} />
 
       <main className="idmc-home__main">
@@ -38,7 +38,7 @@ export function HomeView({
         />
       </main>
 
-      <div className="idmc-home__composer-area">
+      <div className="idmc-view__footer">
         <SuggestionList
           items={suggestions}
           onSelect={onSelectSuggestion}

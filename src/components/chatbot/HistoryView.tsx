@@ -1,10 +1,10 @@
+import { widgetClasses, viewClasses } from './layout'
+import { cn } from '../../lib/utils'
 import { useId } from 'react'
-import backIconSrc from '../../assets/icon-back.svg'
-import { IconButton } from './IconButton'
-import { TopBar, TopBarActions } from './TopBar'
+import { ChatHeader } from './ChatHeader'
+import { EmptyState } from './EmptyState'
+import { HistoryItem } from './HistoryItem'
 import type { ChatHistoryItem } from './types'
-import './chatbot.css'
-import './HistoryView.css'
 
 export interface HistoryViewProps {
   items: ChatHistoryItem[]
@@ -21,34 +21,47 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
   const labelId = useId()
 
   return (
-    <section className="idmc-chatbot idmc-view idmc-history" aria-label="Riwayat chat">
-      <TopBar
-        leading={
-          <IconButton label="Kembali" iconSrc={backIconSrc} iconInset="8.33%" onClick={onBack} />
-        }
-        title="Riwayat Chat"
-        actions={<TopBarActions onClose={onClose} />}
-      />
+    <section
+      className={cn('idmc-chatbot idmc-view idmc-history', widgetClasses, viewClasses)}
+      aria-label="Riwayat chat"
+    >
+      <ChatHeader title="Riwayat Chat" onBack={onBack} onClose={onClose} />
 
       {items.length === 0 ? (
-        <p className="idmc-history__empty">Belum ada riwayat percakapan.</p>
+        <EmptyState message="Belum ada riwayat percakapan." />
       ) : (
-        <div className="idmc-history__body">
-          <h2 className="idmc-history__label" id={labelId}>
+        <div
+          className={cn(
+            'idmc-history__body',
+            'flex [flex:1_1_0] flex-col [min-block-size:0] [padding-block-start:var(--idmc-content-gap)]',
+          )}
+        >
+          <h2
+            className={cn(
+              'idmc-history__label',
+              'flex-none [margin:0] [padding:var(--idmc-space-1)_var(--idmc-space-3)]',
+              '[color:var(--idmc-color-neutral-600)] [font:var(--idmc-type-b4)] [&]:[font-weight:600]',
+              '[letter-spacing:0]',
+            )}
+            id={labelId}
+          >
             Recents
           </h2>
-          <ul className="idmc-history__list" aria-labelledby={labelId}>
+          <ul
+            className={cn(
+              'idmc-history__list',
+              'flex [flex:1_1_0] flex-col [gap:var(--idmc-space-0)] [min-block-size:0] [margin:0] [padding:0]',
+              'overflow-x-hidden overflow-y-auto [overscroll-behavior:contain] [scrollbar-width:thin] list-none',
+            )}
+            aria-labelledby={labelId}
+          >
             {items.map((item) => (
-              <li key={item.id}>
-                <button
-                  type="button"
-                  className="idmc-history__item"
-                  aria-current={item.id === selectedId ? 'true' : undefined}
-                  onClick={() => onSelect?.(item.id)}
-                >
-                  {item.title}
-                </button>
-              </li>
+              <HistoryItem
+                key={item.id}
+                item={item}
+                selected={item.id === selectedId}
+                onSelect={onSelect}
+              />
             ))}
           </ul>
         </div>

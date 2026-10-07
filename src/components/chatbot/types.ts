@@ -17,4 +17,6 @@ export interface ChatMessage {
   id: string
   role: MessageRole
   text: string
+  /** Presentation state only; the backend reply contract remains unchanged. */
+  status?: 'error'
 }

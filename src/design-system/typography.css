@@ -25,17 +25,3 @@
   --idmc-type-b4: 400 12px/18px var(--idmc-font-family);
   --idmc-type-b5: 400 10px/15px var(--idmc-font-family);
 }
-
-/* Utility classes, one per Figma text style. */
-.idmc-text-h1 { font: var(--idmc-type-h1); letter-spacing: 0; }
-.idmc-text-h2 { font: var(--idmc-type-h2); letter-spacing: 0; }
-.idmc-text-h3 { font: var(--idmc-type-h3); letter-spacing: 0; }
-.idmc-text-h4 { font: var(--idmc-type-h4); letter-spacing: 0; }
-.idmc-text-h5 { font: var(--idmc-type-h5); letter-spacing: 0; }
-.idmc-text-h6 { font: var(--idmc-type-h6); letter-spacing: 0; }
-.idmc-text-h7 { font: var(--idmc-type-h7); letter-spacing: 0; }
-.idmc-text-b1 { font: var(--idmc-type-b1); letter-spacing: 0; }
-.idmc-text-b2 { font: var(--idmc-type-b2); letter-spacing: 0; }
-.idmc-text-b3 { font: var(--idmc-type-b3); letter-spacing: 0; }
-.idmc-text-b4 { font: var(--idmc-type-b4); letter-spacing: 0; }
-.idmc-text-b5 { font: var(--idmc-type-b5); letter-spacing: 0; }

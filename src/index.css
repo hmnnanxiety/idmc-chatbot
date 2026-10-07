@@ -1,11 +1,81 @@
-/*
- * Global entry stylesheet: design tokens + typography only.
- * Component styles are scoped with the `idmc-` prefix; the only global element
- * rule is the body margin reset the full-width preview needs.
- */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+/* Global tokens, scoped reset, accessibility policy and keyframes only. */
 @import './design-system/tokens.css';
 @import './design-system/typography.css';
 
 body {
   margin: 0;
+}
+
+/* Inclusive breakpoints preserve the existing CSS boundaries and cascade. */
+@custom-variant tablet (@media (max-width: 800px));
+@custom-variant mobile (@media (max-width: 600px));
+@custom-variant short (@media (max-height: 520px));
+@custom-variant narrow (@media (max-width: 400px));
+
+.idmc-chatbot,
+.idmc-chatbot *,
+.idmc-chatbot *::before,
+.idmc-chatbot *::after {
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idmc-chatbot,
+  .idmc-chatbot *,
+  .idmc-chatbot *::before,
+  .idmc-chatbot *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@keyframes idmc-launcher-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes idmc-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-2)) scale(0.98);
+  }
+}
+
+@keyframes idmc-panel-out {
+  to {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-2)) scale(0.98);
+  }
+}
+
+@keyframes idmc-view-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-1));
+  }
+}
+
+@keyframes idmc-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-2));
+  }
+}
+
+@keyframes idmc-typing-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(calc(-1 * var(--idmc-space-0)));
+  }
 }

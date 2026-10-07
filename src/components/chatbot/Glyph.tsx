@@ -1,4 +1,4 @@
-import './Glyph.css'
+import { cn } from '../../lib/utils'
 
 export interface GlyphProps {
   /** Exported Figma SVG for the icon artwork. */
@@ -18,13 +18,20 @@ export interface GlyphProps {
 export function Glyph({ src, size, inset, bleed = '0' }: GlyphProps) {
   return (
     <span
-      className="idmc-glyph"
+      className={cn('idmc-glyph', 'relative block flex-none')}
       style={{ inlineSize: size, blockSize: size }}
       aria-hidden="true"
     >
-      <span className="idmc-glyph__frame" style={{ inset }}>
-        <span className="idmc-glyph__bleed" style={{ inset: bleed }}>
-          <img className="idmc-glyph__image" src={src} alt="" />
+      <span className={cn('idmc-glyph__frame', 'absolute')} style={{ inset }}>
+        <span className={cn('idmc-glyph__bleed', 'absolute')} style={{ inset: bleed }}>
+          <img
+            className={cn(
+              'idmc-glyph__image',
+              'block [inline-size:100%] [block-size:100%] [max-inline-size:none]',
+            )}
+            src={src}
+            alt=""
+          />
         </span>
       </span>
     </span>

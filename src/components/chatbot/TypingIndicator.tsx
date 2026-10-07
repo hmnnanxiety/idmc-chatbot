@@ -1,5 +1,6 @@
+import { visuallyHiddenClasses } from './layout'
+import { cn } from '../../lib/utils'
 import { MessageBubble } from './MessageBubble'
-import './TypingIndicator.css'
 
 export interface TypingIndicatorProps {
   /** Accessible text announced while the assistant is loading. */
@@ -13,11 +14,45 @@ export interface TypingIndicatorProps {
 export function TypingIndicator({ label = 'Asisten sedang mengetik' }: TypingIndicatorProps) {
   return (
     <MessageBubble role="assistant">
-      <span className="idmc-typing" role="status">
-        <span className="idmc-typing__dot" aria-hidden="true" />
-        <span className="idmc-typing__dot" aria-hidden="true" />
-        <span className="idmc-typing__dot" aria-hidden="true" />
-        <span className="idmc-visually-hidden">{label}</span>
+      <span
+        className={cn(
+          'idmc-typing',
+          'relative inline-flex items-center [gap:var(--idmc-space-1)] [--idmc-typing-dot-size:6px]',
+          '[block-size:24px]',
+        )}
+        role="status"
+      >
+        <span
+          className={cn(
+            'idmc-typing__dot',
+            'flex-none [inline-size:var(--idmc-typing-dot-size)] [block-size:var(--idmc-typing-dot-size)]',
+            '[border-radius:var(--idmc-radius-full)] [background:var(--idmc-color-neutral-600)]',
+            '[animation:idmc-typing-dot_1200ms_ease-in-out_infinite] [&:nth-of-type(2)]:[animation-delay:160ms]',
+            '[&:nth-of-type(3)]:[animation-delay:320ms]',
+          )}
+          aria-hidden="true"
+        />
+        <span
+          className={cn(
+            'idmc-typing__dot',
+            'flex-none [inline-size:var(--idmc-typing-dot-size)] [block-size:var(--idmc-typing-dot-size)]',
+            '[border-radius:var(--idmc-radius-full)] [background:var(--idmc-color-neutral-600)]',
+            '[animation:idmc-typing-dot_1200ms_ease-in-out_infinite] [&:nth-of-type(2)]:[animation-delay:160ms]',
+            '[&:nth-of-type(3)]:[animation-delay:320ms]',
+          )}
+          aria-hidden="true"
+        />
+        <span
+          className={cn(
+            'idmc-typing__dot',
+            'flex-none [inline-size:var(--idmc-typing-dot-size)] [block-size:var(--idmc-typing-dot-size)]',
+            '[border-radius:var(--idmc-radius-full)] [background:var(--idmc-color-neutral-600)]',
+            '[animation:idmc-typing-dot_1200ms_ease-in-out_infinite] [&:nth-of-type(2)]:[animation-delay:160ms]',
+            '[&:nth-of-type(3)]:[animation-delay:320ms]',
+          )}
+          aria-hidden="true"
+        />
+        <span className={cn('idmc-visually-hidden', visuallyHiddenClasses)}>{label}</span>
       </span>
     </MessageBubble>
   )

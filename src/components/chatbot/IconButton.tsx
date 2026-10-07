@@ -1,5 +1,5 @@
+import { cn } from '../../lib/utils'
 import { Glyph } from './Glyph'
-import './IconButton.css'
 
 export interface IconButtonProps {
   /** Accessible name; the icon itself is decorative. */
@@ -20,7 +20,14 @@ export function IconButton({
   return (
     <button
       type="button"
-      className="idmc-icon-button"
+      className={cn(
+        'idmc-icon-button',
+        'inline-flex flex-none items-center justify-center [inline-size:var(--idmc-header-action-size)]',
+        '[block-size:var(--idmc-header-action-size)] [padding:0] overflow-clip [border:0] [border-radius:44px]',
+        '[background:var(--idmc-color-neutral-100)] cursor-pointer',
+        '[&:focus-visible]:[outline:var(--idmc-stroke-1)_solid_var(--idmc-color-primary-500)]',
+        '[&:focus-visible]:[outline-offset:var(--idmc-stroke-1)]',
+      )}
       aria-label={label}
       onClick={onClick}
     >

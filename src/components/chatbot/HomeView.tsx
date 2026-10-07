@@ -1,10 +1,10 @@
+import { widgetClasses, viewClasses, footerClasses } from './layout'
+import { cn } from '../../lib/utils'
 import { ChatInput } from './ChatInput'
 import { HeroTitle } from './HeroTitle'
 import { SuggestionList } from './SuggestionList'
-import { TopBar, TopBarActions } from './TopBar'
+import { ChatHeader } from './ChatHeader'
 import type { ChatUser } from './types'
-import './chatbot.css'
-import './HomeView.css'
 
 export interface HomeViewProps {
   user: ChatUser
@@ -28,27 +28,26 @@ export function HomeView({
   onOpenHistory,
 }: HomeViewProps) {
   return (
-    <section className="idmc-chatbot idmc-view idmc-home" aria-label="Beranda">
-      <TopBar actions={<TopBarActions onOpenHistory={onOpenHistory} onClose={onClose} />} />
+    <section
+      className={cn('idmc-chatbot idmc-view idmc-home', widgetClasses, viewClasses)}
+      aria-label="Beranda"
+    >
+      <ChatHeader onOpenHistory={onOpenHistory} onClose={onClose} />
 
-      <main className="idmc-home__main">
-        <HeroTitle
-          title="Chatbot Data Publik"
-          tagline="Jelajahi Data, Kenali Yogyakarta."
-        />
+      <main
+        className={cn(
+          'idmc-home__main',
+          '[flex:1_1_auto] [min-block-size:0] flex items-center [inline-size:100%] overflow-y-auto',
+          '[overscroll-behavior:contain] short:items-start short:[padding-block-start:var(--idmc-space-3)]',
+        )}
+      >
+        <HeroTitle title="Chatbot Data Publik" tagline="Jelajahi Data, Kenali Yogyakarta." />
       </main>
 
-      <div className="idmc-view__footer">
-        <SuggestionList
-          items={suggestions}
-          onSelect={onSelectSuggestion}
-        />
+      <div className={cn('idmc-view__footer', footerClasses)}>
+        <SuggestionList items={suggestions} onSelect={onSelectSuggestion} />
 
-        <ChatInput
-          variant="home"
-          placeholder="Tanyakan sesuatu..."
-          onSubmit={onSubmit}
-        />
+        <ChatInput variant="home" placeholder="Tanyakan sesuatu..." onSubmit={onSubmit} />
       </div>
     </section>
   )

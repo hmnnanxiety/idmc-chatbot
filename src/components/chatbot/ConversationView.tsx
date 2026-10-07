@@ -1,9 +1,9 @@
+import { widgetClasses, viewClasses, footerClasses } from './layout'
+import { cn } from '../../lib/utils'
 import { ChatInput } from './ChatInput'
 import { MessageList } from './MessageList'
-import { TopBar, TopBarActions } from './TopBar'
+import { ChatHeader } from './ChatHeader'
 import type { ChatMessage, ChatUser } from './types'
-import './chatbot.css'
-import './ConversationView.css'
 
 export interface ConversationViewProps {
   user: ChatUser
@@ -27,14 +27,32 @@ export function ConversationView({
   onOpenHistory,
 }: ConversationViewProps) {
   return (
-    <section className="idmc-chatbot idmc-view idmc-conversation" aria-label="Percakapan">
-      <TopBar
-        title="Chatbot Data Publik"
-        actions={<TopBarActions onOpenHistory={onOpenHistory} onClose={onClose} />}
-      />
+    <section
+      className={cn(
+        'idmc-chatbot idmc-view idmc-conversation',
+        widgetClasses,
+        viewClasses,
+        '[animation:idmc-view-in_var(--idmc-motion-duration-base)_var(--idmc-motion-ease-out)]',
+        '[@media(prefers-reduced-motion:_reduce)]:[animation:none]',
+      )}
+      aria-label="Percakapan"
+    >
+      <ChatHeader title="Chatbot Data Publik" onOpenHistory={onOpenHistory} onClose={onClose} />
       <MessageList messages={messages} isAssistantLoading={isAssistantLoading} />
-      <div className="idmc-view__footer idmc-conversation__footer">
-        <ChatInput variant="chat" onSubmit={onSend} autoFocus />
+      <div
+        className={cn(
+          'idmc-view__footer idmc-conversation__footer',
+          footerClasses,
+          '[padding-block-start:var(--idmc-content-gap)] short:[padding-block-start:var(--idmc-space-1)]',
+        )}
+      >
+        <ChatInput
+          variant="chat"
+          placeholder="Tanyakan sesuatu..."
+          onSubmit={onSend}
+          submitDisabled={isAssistantLoading}
+          autoFocus
+        />
       </div>
     </section>
   )

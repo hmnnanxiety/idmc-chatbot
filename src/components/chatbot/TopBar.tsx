@@ -1,10 +1,8 @@
+import { cn } from '../../lib/utils'
 import type { ReactNode } from 'react'
 import closeIconSrc from '../../assets/icon-close.svg'
 import historyIconSrc from '../../assets/figma/history-chat.svg'
-// import settingsIconSrc from '../../assets/figma/icon-settings.svg'
 import { IconButton } from './IconButton'
-// import { UserBadge } from './UserBadge'
-import './TopBar.css'
 
 export interface TopBarProps {
   /** Left-most slot, e.g. a back button. Rendered before the title. */
@@ -22,14 +20,45 @@ export interface TopBarProps {
  */
 export function TopBar({ leading, title, actions }: TopBarProps) {
   return (
-    <header className="idmc-top-bar">
+    <header
+      className={cn(
+        'idmc-top-bar',
+        'flex flex-none items-center justify-between [inline-size:100%]',
+        '[min-block-size:var(--idmc-header-height)] [padding:0] [gap:var(--idmc-header-gap)]',
+      )}
+    >
       {(leading || title) && (
-        <div className="idmc-top-bar__leading">
+        <div
+          className={cn(
+            'idmc-top-bar__leading',
+            'flex [flex:0_1_auto] items-center [gap:var(--idmc-header-gap)] [min-inline-size:0]',
+          )}
+        >
           {leading}
-          {title && <h1 className="idmc-top-bar__title">{title}</h1>}
+          {title && (
+            <h1
+              className={cn(
+                'idmc-top-bar__title',
+                '[min-inline-size:0] [margin:0] overflow-hidden text-ellipsis whitespace-nowrap',
+                '[color:var(--idmc-color-primary-500)] [font:var(--idmc-type-b1)] [&]:[font-weight:700]',
+                '[letter-spacing:0]',
+              )}
+            >
+              {title}
+            </h1>
+          )}
         </div>
       )}
-      {actions && <div className="idmc-top-bar__actions">{actions}</div>}
+      {actions && (
+        <div
+          className={cn(
+            'idmc-top-bar__actions',
+            'flex flex-none items-center [gap:var(--idmc-header-gap)] [margin-inline-start:auto]',
+          )}
+        >
+          {actions}
+        </div>
+      )}
     </header>
   )
 }

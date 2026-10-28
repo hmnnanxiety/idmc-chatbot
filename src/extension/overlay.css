@@ -1,0 +1,19 @@
+@import './fonts.css';
+@import '../index.css';
+
+/* One transparent viewport anchor. Only the launcher and open panel take input. */
+:host {
+  all: initial;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: block;
+  pointer-events: none;
+  color: var(--idmc-color-neutral-1000);
+  --idmc-font-family: 'IDMC Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+.idmc-launcher,
+.idmc-overlay__panel[data-state='open'] {
+  pointer-events: auto;
+}

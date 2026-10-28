@@ -4,9 +4,10 @@
  * Source: Figma "Frontend Dev IDMC Chatbot" > Design System > Typography (node 1:4035).
  * Family: Plus Jakarta Sans. Letter spacing is 0 for every style.
  * Each --idmc-type-* token is a full `font` shorthand: weight size/line-height family.
- * The font files themselves are loaded in index.html.
+ * The preview loads the family in index.html; the extension bundles local fonts.
  */
-:root {
+:root,
+:host {
   --idmc-font-family: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
 
   /* Headings (Bold, 700) */

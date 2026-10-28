@@ -5,10 +5,6 @@
 @import './design-system/tokens.css';
 @import './design-system/typography.css';
 
-body {
-  margin: 0;
-}
-
 /* Inclusive breakpoints preserve the existing CSS boundaries and cascade. */
 @custom-variant tablet (@media (max-width: 800px));
 @custom-variant mobile (@media (max-width: 600px));

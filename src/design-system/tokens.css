@@ -7,7 +7,8 @@
  * Names mirror the Figma variable paths, e.g. Primary/500 -> --idmc-color-primary-500.
  * Values are copied as-is from Figma; nothing here is invented.
  */
-:root {
+:root,
+:host {
   /* Color / Primary */
   --idmc-color-primary-10: #da1717;
   --idmc-color-primary-100: #fbd7cc;

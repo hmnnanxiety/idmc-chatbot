@@ -95,8 +95,10 @@ export function ChatOverlay({ user, suggestions, historyItems = [] }: ChatOverla
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') requestClose()
     }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    // Listen inside the shadow tree so portal shortcuts do not receive our keys.
+    const root = panelRef.current?.getRootNode() ?? document
+    root.addEventListener('keydown', handleKeyDown as EventListener)
+    return () => root.removeEventListener('keydown', handleKeyDown as EventListener)
   }, [phase, requestClose])
 
   // Move focus into the panel when it opens so keyboard users land inside it.
@@ -108,7 +110,9 @@ export function ChatOverlay({ user, suggestions, historyItems = [] }: ChatOverla
   // panel instead of dropping it on <body>. A view that autofocuses (the composer) wins.
   useEffect(() => {
     const panel = panelRef.current
-    if (phase === 'open' && panel && !panel.contains(document.activeElement)) panel.focus()
+    const root = panel?.getRootNode()
+    const activeElement = root instanceof ShadowRoot ? root.activeElement : document.activeElement
+    if (phase === 'open' && panel && !panel.contains(activeElement)) panel.focus()
   }, [view, phase])
 
   // After the panel has closed and the launcher is back, hand focus to the launcher.

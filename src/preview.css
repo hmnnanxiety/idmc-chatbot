@@ -1,0 +1,4 @@
+/* Standalone development preview only; never inject this into the portal. */
+body {
+  margin: 0;
+}

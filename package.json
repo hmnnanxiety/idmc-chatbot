@@ -12,7 +12,8 @@
     "zip": "npm run typecheck && wxt zip",
     "lint": "eslint .",
     "typecheck": "wxt prepare && tsc -b --pretty false && tsc --noEmit -p tsconfig.extension.json",
-    "test": "node --test scripts/ui.test.mjs",
+    "test": "node --test --test-concurrency=1 scripts/ui.test.mjs scripts/extension.test.mjs",
+    "test:browser": "node --test scripts/browser.test.mjs",
     "preview:web": "vite preview",
     "postinstall": "wxt prepare"
   },
@@ -37,6 +38,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+    "playwright": "1.62.1",
     "tailwindcss": "4.3.3",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.69.0",

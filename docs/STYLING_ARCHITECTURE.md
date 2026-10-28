@@ -22,12 +22,16 @@ authorize adding its full-page controls or changing the widget layout.
 ## Global stylesheet boundaries
 
 `src/index.css` imports Tailwind theme/utilities and the existing design-system
-tokens. It retains the body margin reset, scoped box-sizing reset, reduced-motion
+tokens. It retains the scoped box-sizing reset, reduced-motion
 policy, inclusive breakpoint definitions and shared animation keyframes only.
+The standalone body margin reset lives in `src/preview.css`. Extension styles load
+inside a Shadow DOM, with tokens exposed on `:host` as well as `:root` and a bundled,
+uniquely named font family. See `docs/features/extension-overlay.md`.
 Tailwind Preflight is intentionally **not** imported, to preserve browser defaults
 and Markdown rendering. `tokens.css` and `typography.css` retain global token
-definitions; obsolete typography helper selectors were removed. Font loading and
-SVG assets are unchanged. No Radix, shadcn component library or CVA was introduced.
+definitions; obsolete typography helper selectors were removed. The standalone
+preview's font loading and original Figma SVG assets are retained. No Radix,
+shadcn component library or CVA was introduced.
 
 Responsive variants keep the original inclusive CSS conditions:
 `tablet` <= 800px width, `mobile` <= 600px width, `short` <= 520px height,

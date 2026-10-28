@@ -1,6 +1,7 @@
 import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ChatOverlay } from '../components/chatbot/ChatOverlay'
+import { sendExtensionChatMessage } from './chatTransport'
 
 /** Mount the widget directly: App.tsx is a full-page development preview. */
 export function mountChatbot(container: HTMLElement) {
@@ -13,6 +14,7 @@ export function mountChatbot(container: HTMLElement) {
     suggestions: ['Dashboard Koperasi', 'Data penduduk DIY', 'Statistik pendidikan'],
     // No sample history is presented as an actual saved conversation.
     historyItems: [],
+    requestReply: sendExtensionChatMessage,
   }))
   return root
 }

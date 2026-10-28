@@ -1,6 +1,7 @@
 # IDMC portal overlay
 
-Branch: `feature/extension-overlay`  
+Branch: `feature/extension-overlay`
+
 Depends on: `feature/wxt-foundation`
 
 ## Behavior

@@ -8,6 +8,7 @@ import { HistoryView } from './HistoryView'
 import { HomeView } from './HomeView'
 import type { ChatHistoryItem, ChatUser } from './types'
 import { useChatSession } from './useChatSession'
+import type { ChatTransport } from '../../api/chatRequest'
 
 type ChatView = 'home' | 'chat' | 'history'
 
@@ -24,6 +25,8 @@ export interface ChatOverlayProps {
   suggestions: string[]
   /** Mock list for the History view. Omit or pass [] to see the empty state. */
   historyItems?: ChatHistoryItem[]
+  /** Extension transport; the standalone preview defaults to its Vite API proxy. */
+  requestReply?: ChatTransport
 }
 
 /**
@@ -36,10 +39,10 @@ export interface ChatOverlayProps {
  * FastAPI `/chat` endpoint; the typing indicator shows while that request is
  * pending, then the reply (or a simple error message) is appended.
  */
-export function ChatOverlay({ user, suggestions, historyItems = [] }: ChatOverlayProps) {
+export function ChatOverlay({ user, suggestions, historyItems = [], requestReply }: ChatOverlayProps) {
   const [phase, setPhase] = useState<OverlayPhase>('closed')
   const [view, setView] = useState<ChatView>('home')
-  const { messages, isAssistantLoading, sendMessage, resetConversation } = useChatSession()
+  const { messages, isAssistantLoading, sendMessage, resetConversation } = useChatSession(requestReply)
   // Visual selection in History only; no conversation is restored.
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
 

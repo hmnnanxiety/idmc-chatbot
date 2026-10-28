@@ -1,19 +1,19 @@
 # Feature branches
 
-The migration is split into feature branches and commits. No changes are
-merged into `main`. The branches are stacked so each review can show only its own
-feature relative to its parent.
+The three migration features are merged into `main`. Their separate branches and
+commits are retained for documentation. They were implemented and merged in the
+dependency order shown below.
 
-| Branch | Parent / suggested PR base | Documentation |
+| Branch | Original base | Documentation |
 | --- | --- | --- |
 | `feature/wxt-foundation` | `main` | [WXT foundation](wxt-foundation.md) |
 | `feature/extension-overlay` | `feature/wxt-foundation` | [Portal overlay](extension-overlay.md) |
 | `feature/extension-api` | `feature/extension-overlay` | [API bridge](extension-api.md) |
 
-Use `feature/extension-api` to run the complete extension. Review/merge in the order
-shown above. Once a parent lands, update the next PR's base to `main` as appropriate
-for the chosen merge strategy. New independent features should start from updated
-`main`; do not append unrelated work to these migration branches.
+Use `main` to run the complete extension. New independent features should start
+from updated `main` using a new `feature/` branch; do not append unrelated work to
+these completed migration branches. Frontend visual changes should be agreed with
+the UI/UX designer before implementation.
 
 For each feature, document the user-visible result, scope, architecture decisions,
 configuration and validation. Keep screenshots, dependency caches and unpacked

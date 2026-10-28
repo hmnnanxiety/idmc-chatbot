@@ -1,7 +1,8 @@
 # Current handoff
 
 The frontend is now a WXT Chromium extension for `https://idmc.jogjaprov.go.id/*`.
-Use `feature/extension-api` for all migration changes. `main` is unchanged.
+The completed migration is available on `main`. Feature branches are retained
+to document each part of the migration.
 
 - WXT foundation and portal overlay are separate feature commits/branches.
 - The overlay retains the existing Figma UI in an isolated Shadow DOM.
@@ -11,7 +12,7 @@ Use `feature/extension-api` for all migration changes. `main` is unchanged.
 - The standalone Vite preview remains available through `npm run dev:web`.
 
 Read [README](README.md) for installation/builds, [feature index](docs/features/README.md)
-for branch review order and [AI handoff](docs/AI_HANDOFF.md) for endpoint integration.
+for migration history and [AI handoff](docs/AI_HANDOFF.md) for endpoint integration.
 
 Validation: `npm run lint`, `npm test`, `npm run build`, `npm run test:browser`,
 `npm run build:web`, `npm run zip`, and `git diff --check`.

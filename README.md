@@ -86,9 +86,9 @@ Firefox support remain separate features.
 
 ## Feature documentation
 
-Use the complete extension from `feature/extension-api`. The migration has separate
+Use the complete extension from `main`. The migration retains separate
 `feature/wxt-foundation`, `feature/extension-overlay` and `feature/extension-api`
-branches and commits; see [feature index](docs/features/README.md) for review order.
+branches and commits; see [feature index](docs/features/README.md) for migration history.
 
 Styling rules remain in [styling architecture](docs/STYLING_ARCHITECTURE.md).
 The original [frontend polish](docs/FRONTEND_POLISH.md) is historical validation;

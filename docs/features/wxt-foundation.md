@@ -1,6 +1,7 @@
 # WXT foundation
 
-Branch: `feature/wxt-foundation`  
+Branch: `feature/wxt-foundation`
+
 Base: `main` at `6116196`
 
 ## Purpose

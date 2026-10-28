@@ -1,34 +1,17 @@
-## Status
+# Current handoff
 
-Frontend UI foundation complete and visually locked.
+The frontend is now a WXT Chromium extension for `https://idmc.jogjaprov.go.id/*`.
+Use `feature/extension-api` for all migration changes. `main` is unchanged.
 
-Completed:
-- Home / Conversation / History
-- shared view shell and spacing tokens
-- normalized header/action/composer sizing
-- compact responsive layout
-- launcher/open/close behavior
-- history navigation
-- assistant typing indicator
-- `isAssistantLoading` UI plumbing
-- accessibility basics
+- WXT foundation and portal overlay are separate feature commits/branches.
+- The overlay retains the existing Figma UI in an isolated Shadow DOM.
+- The backend remains deliberately unconfigured; no fake replies are shipped.
+- Request format still needs confirmation from the AI engineer.
+- History is empty in the injected widget and conversations reset on close.
+- The standalone Vite preview remains available through `npm run dev:web`.
 
-Current loading flow is UI-only.
-No fake delay or fake assistant response.
+Read [README](README.md) for installation/builds, [feature index](docs/features/README.md)
+for branch review order and [AI handoff](docs/AI_HANDOFF.md) for endpoint integration.
 
-## Next
-
-- integrate actual FastAPI/RAG endpoint when contract is ready
-- connect loading state to real request lifecycle
-- render real assistant responses and errors
-- final architecture cleanup only if still needed
-
-## Not implemented yet
-
-- backend/RAG integration
-- streaming
-- persistent history
-- auth
-- routing
-- fullscreen/maximize
-- dashboard injection
+Validation: `npm run lint`, `npm test`, `npm run build`, `npm run test:browser`,
+`npm run build:web`, `npm run zip`, and `git diff --check`.

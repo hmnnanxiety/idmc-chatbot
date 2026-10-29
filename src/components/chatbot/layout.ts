@@ -3,6 +3,7 @@ export const widgetClasses = [
   '[font:var(--idmc-type-b2)] [letter-spacing:0] [color-scheme:light]',
   '[--idmc-motion-duration-fast:140ms] [--idmc-motion-duration-base:200ms]',
   '[--idmc-motion-duration-enter:420ms] [--idmc-motion-duration-exit:180ms]',
+  '[--idmc-motion-duration-content:320ms]',
   '[--idmc-motion-ease-out:cubic-bezier(0.22,_1,_0.36,_1)]',
   '[--idmc-widget-padding-inline:var(--idmc-space-4)] [--idmc-widget-padding-block:var(--idmc-space-4)]',
   '[--idmc-header-height:44px] [--idmc-header-action-size:30px] [--idmc-header-gap:var(--idmc-space-2)]',
@@ -12,10 +13,13 @@ export const widgetClasses = [
   'short:[--idmc-widget-padding-block:var(--idmc-space-2)] short:[--idmc-header-height:40px]',
 ].join(' ')
 
+// The panel and every view share one stationary surface during navigation.
+export const surfaceClasses = '[background:linear-gradient(155deg,_var(--idmc-color-neutral-100)_0%,_var(--idmc-color-neutral-100)_38%,_var(--idmc-color-secondary-100)_100%)]'
+
 export const viewClasses = [
   'flex flex-col [inline-size:100%] [block-size:100%] [min-block-size:0] [min-inline-size:0]',
   '[padding:var(--idmc-widget-padding-block)_var(--idmc-widget-padding-inline)] overflow-hidden',
-  '[background:var(--idmc-color-neutral-200)]',
+  surfaceClasses,
 ].join(' ')
 
 export const footerClasses = [

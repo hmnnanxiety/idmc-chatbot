@@ -49,7 +49,7 @@ export function ChatInput({
         '[&:focus-within]:[outline:var(--idmc-stroke-1)_solid_var(--idmc-color-primary-300)]',
         '[&:focus-within]:[outline-offset:-2px]',
         variant === 'chat'
-          ? '[border-radius:var(--idmc-radius-4)]'
+          ? '[border-radius:var(--idmc-radius-4)] [animation:idmc-content-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_120ms_backwards]'
           : '[border-radius:var(--idmc-radius-full)] [animation:idmc-content-in_var(--idmc-motion-duration-enter)_var(--idmc-motion-ease-out)_260ms_backwards]',
       )}
       onSubmit={handleSubmit}

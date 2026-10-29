@@ -5,7 +5,8 @@ The completed migration is available on `main`. Feature branches are retained
 to document each part of the migration.
 
 The current `feature/overlay-elevation-motion` branch adds a clearer panel border
-and shadow, wrapped capsules and staggered entrance motion. It reuses the existing
+and shadow, a white/yellow gradient, wrapped capsules and entrance motion across
+Home, Conversation and History. It reuses the existing
 palette and components and is not yet merged into `main`. See its
 [feature document](docs/features/overlay-elevation-motion.md) for review instructions.
 

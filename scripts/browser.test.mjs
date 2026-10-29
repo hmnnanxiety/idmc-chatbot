@@ -7,6 +7,7 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { setTimeout as delay } from 'node:timers/promises'
 import { chromium } from 'playwright'
+import { createServer as createViteServer } from 'vite'
 
 let backend, placeholder, configured
 const contexts = [], profiles = [], received = [], errors = []
@@ -55,6 +56,14 @@ async function portal(context, t, media) {
 async function waitFor(predicate) {
   for (let i = 0; i < 100; i++) { if (predicate()) return; await delay(20) }
   assert.fail('Expected asynchronous condition did not occur')
+}
+
+async function settleMotion(locator) {
+  await locator.evaluate(async element => {
+    await Promise.allSettled(element.getAnimations({ subtree: true })
+      .filter(animation => animation.effect.getTiming().iterations !== Infinity)
+      .map(animation => animation.finished))
+  })
 }
 
 before(async () => {
@@ -247,4 +256,82 @@ test('other origins and portal iframes do not receive the chatbot', async t => {
   await placeholder.route('https://example.org/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Other site</h1>' }))
   await page.goto('https://example.org/extension-test', { waitUntil: 'networkidle' })
   assert.equal(await page.locator('idmc-chatbot-extension').count(), 0)
+})
+
+test('view motion preserves the conversation, stationary gradient and reduced-motion behavior', async t => {
+  const page = await portal(configured, t, { reducedMotion: 'no-preference' })
+  const panel = page.getByRole('dialog')
+  await settleMotion(panel)
+  const surface = await page.locator('.idmc-view').evaluate(view => getComputedStyle(view).backgroundImage)
+  assert.match(surface, /linear-gradient/)
+  assert.match(surface, /rgb\(255, 255, 255\)/)
+  assert.match(surface, /rgb\(255, 243, 207\)/)
+
+  const input = page.getByRole('textbox', { name: 'Tulis pesan' })
+  await input.fill('slow')
+  await input.press('Enter')
+  await page.getByRole('status').waitFor()
+  const composition = await page.locator('.idmc-conversation').evaluate(view => ({
+    surface: getComputedStyle(view).backgroundImage,
+    transform: getComputedStyle(view).transform,
+    readingSurface: getComputedStyle(view.querySelector('.idmc-message-list')).backgroundColor,
+    motion: ['.idmc-top-bar', '.idmc-message-list', '.idmc-chat-input'].map(selector =>
+      getComputedStyle(view.querySelector(selector)).animationName),
+  }))
+  assert.equal(composition.surface, surface)
+  assert.equal(composition.transform, 'none', 'The gradient does not slide when views change')
+  assert.equal(composition.readingSurface, 'rgb(255, 255, 255)')
+  assert.ok(composition.motion.every(name => name !== 'none'))
+  await page.getByRole('cell', { name: '42', exact: true }).waitFor()
+  await settleMotion(panel)
+
+  await input.fill('slow')
+  await input.press('Enter')
+  await page.getByRole('status').waitFor()
+  assert.equal(await page.locator('.idmc-message--user').first().evaluate(message => message.getAnimations().length), 0,
+    'Appending a message does not replay an existing message entrance')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  assert.equal(await panel.evaluate(element => element.getAnimations({ subtree: true }).length), 0,
+    'Reduced motion also stops the loading dots and composer transition')
+  await page.getByRole('status').waitFor({ state: 'detached' })
+
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
+  await page.getByText('Belum ada riwayat percakapan.').waitFor()
+  await settleMotion(panel)
+  assert.equal(await page.locator('.idmc-history').evaluate(view => getComputedStyle(view).backgroundImage), surface)
+  await page.screenshot({ path: '.output/qa/extension-history.png' })
+  await page.getByRole('button', { name: 'Kembali', exact: true }).click()
+  await settleMotion(panel)
+  assert.equal(await page.locator('.idmc-message--user').count(), 2)
+  assert.equal(await input.evaluate(element => element === element.getRootNode().activeElement), true)
+})
+
+test('preview history rows stagger once and selection remains usable on small screens', async t => {
+  const preview = await createViteServer({ server: { host: '127.0.0.1', port: 0 }, clearScreen: false })
+  await preview.listen()
+  t.after(() => preview.close())
+  const page = await placeholder.newPage()
+  page.on('pageerror', error => errors.push(error.message))
+  t.after(() => page.close())
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto(`http://127.0.0.1:${preview.httpServer.address().port}`)
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
+  await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
+  const rows = page.locator('.idmc-history__list > li')
+  assert.equal(await rows.count(), 4)
+  const delays = await rows.evaluateAll(items => items.map(item => parseFloat(getComputedStyle(item).animationDelay)))
+  assert.ok(delays.every((value, index) => index === 0 || value > delays[index - 1]))
+  await settleMotion(page.getByRole('dialog'))
+  await page.getByRole('button', { name: 'Data penduduk DIY', exact: true }).click()
+  assert.equal(await page.getByRole('button', { name: 'Data penduduk DIY', exact: true }).getAttribute('aria-current'), 'true')
+  assert.ok((await rows.evaluateAll(items => items.map(item => item.getAnimations().length))).every(count => count === 0))
+  await page.screenshot({ path: '.output/qa/preview-history-populated.png' })
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  assert.equal(await page.getByRole('dialog').evaluate(element => element.getAnimations({ subtree: true }).length), 0)
+  await page.getByRole('button', { name: 'Data kesehatan Yogyakarta', exact: true }).click()
+  await page.screenshot({ path: '.output/qa/preview-history-mobile.png' })
+  await page.getByRole('button', { name: 'Kembali', exact: true }).click()
+  await page.getByRole('heading', { name: 'Chatbot Data Publik' }).waitFor()
 })

@@ -1,4 +1,4 @@
-import { widgetClasses } from './layout'
+import { widgetClasses, surfaceClasses } from './layout'
 import { cn } from '../../lib/utils'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { AnimationEvent } from 'react'
@@ -151,7 +151,8 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
             '[inset-block-end:var(--idmc-overlay-inset-end)] [z-index:1000]',
             '[inline-size:min(_var(--idmc-overlay-panel-width),_calc(100%_-_2_*_var(--idmc-overlay-inset-inline))_)]',
             '[block-size:min(_var(--idmc-overlay-panel-height),_calc(100%_-_var(--idmc-overlay-inset-start)_-_var(--idmc-overlay-inset-end))_)]',
-            'overflow-hidden [border-radius:var(--idmc-radius-5)] [background:var(--idmc-color-neutral-200)]',
+            'overflow-hidden [border-radius:var(--idmc-radius-5)]',
+            surfaceClasses,
             '[border:var(--idmc-stroke-0)_solid_var(--idmc-color-neutral-400)]',
             '[box-shadow:0_24px_64px_-12px_color-mix(in_srgb,_var(--idmc-color-neutral-1000)_24%,_transparent),_0_8px_24px_-8px_color-mix(in_srgb,_var(--idmc-color-neutral-1000)_18%,_transparent)]',
             '[transform-origin:100%_100%]',

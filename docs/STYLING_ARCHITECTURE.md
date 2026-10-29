@@ -3,13 +3,14 @@
 The original migration changed styling ownership while preserving the UI and chat
 API. The compact Home / Chat / History widget remains the baseline. The subsequent
 [overlay refinement](features/overlay-elevation-motion.md) adds clearer elevation,
-wrapped capsules and staggered motion using the same palette and components.
+a shared white/yellow gradient, wrapped capsules and motion across the three views
+using the same palette and components.
 
 ## Editing styles
 
 - Component utilities live next to JSX in `src/components/chatbot/*.tsx`.
-- `layout.ts` shares only the widget shell, view shell, footer and hidden-label
-  utilities. It prevents the three views from drifting apart.
+- `layout.ts` shares the widget shell and motion timings, gradient surface, view
+  shell, footer and hidden-label utilities. It keeps the three views consistent.
 - `src/lib/utils.ts` exposes `cn()` (`clsx` + `tailwind-merge`). Use ordinary
   conditions for variants such as message role, composer shape and selected history.
 - Keep the existing `--idmc-*` tokens. Arbitrary-property utilities deliberately

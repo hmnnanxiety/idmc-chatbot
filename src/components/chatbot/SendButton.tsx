@@ -21,6 +21,9 @@ export function SendButton({ label = 'Kirim pesan', disabled = false }: SendButt
         '[&:focus-visible]:[outline:var(--idmc-stroke-1)_solid_var(--idmc-color-secondary-500)]',
         '[&:focus-visible]:[outline-offset:var(--idmc-stroke-1)] [&:disabled]:cursor-not-allowed',
         '[&:disabled]:[opacity:0.55]',
+        '[transition:opacity_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out),_transform_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out)]',
+        '[@media(hover:_hover)]:[&:enabled:hover]:[transform:translateY(calc(-1_*_var(--idmc-space-0)))]',
+        '[&:enabled:active]:[transform:scale(0.94)]',
       )}
       aria-label={label}
       disabled={disabled}

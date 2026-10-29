@@ -20,7 +20,7 @@ export function MessageBubble({ role, children, status }: MessageBubbleProps) {
       className={cn(
         `idmc-message idmc-message--${role}`,
         'flex flex-none [inline-size:100%] [margin:0] [padding:0] list-none',
-        '[animation:idmc-message-in_var(--idmc-motion-duration-base)_var(--idmc-motion-ease-out)]',
+        '[animation:idmc-message-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_backwards]',
         role === 'user' ? 'justify-end' : 'justify-start',
       )}
     >

@@ -91,7 +91,8 @@ Use the complete extension from `main`. The migration retains separate
 branches and commits; see [feature index](docs/features/README.md) for migration history.
 
 The separate `feature/overlay-elevation-motion` branch refines the overlay's border,
-shadow, capsules and entrance animation with the existing palette and components.
+shadow, white/yellow gradient, capsules and motion across Home, Conversation and
+History with the existing palette and components.
 See [overlay refinement](docs/features/overlay-elevation-motion.md) for details and
 review instructions. This refinement is not yet merged into `main`.
 

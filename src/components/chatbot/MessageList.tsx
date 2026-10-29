@@ -35,6 +35,8 @@ export function MessageList({
         '[min-inline-size:0] [margin:0] [padding:var(--idmc-space-4)_var(--idmc-space-3)] overflow-x-hidden',
         'overflow-y-auto [overscroll-behavior:contain] [background:var(--idmc-color-neutral-100)]',
         '[border-radius:var(--idmc-radius-4)] list-none [scrollbar-width:thin]',
+        '[border:var(--idmc-stroke-0)_solid_var(--idmc-color-neutral-300)]',
+        '[animation:idmc-view-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_60ms_backwards]',
       )}
       role="log"
       aria-live="polite"

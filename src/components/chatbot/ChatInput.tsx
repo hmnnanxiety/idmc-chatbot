@@ -40,13 +40,17 @@ export function ChatInput({
       className={cn(
         `idmc-chat-input idmc-chat-input--${variant}`,
         'flex flex-none items-center justify-end [inline-size:100%] [block-size:var(--idmc-composer-height)]',
-        '[margin:0] [padding:6px_8px] overflow-clip',
+        '[margin:0] [padding:5px_7px] overflow-clip',
         '[background:var(--idmc-color-neutral-100)]',
+        '[border:var(--idmc-stroke-0)_solid_var(--idmc-color-neutral-300)] [box-shadow:var(--idmc-shadow-e1)]',
+        '[transition:border-color_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out),_box-shadow_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out)]',
+        '[&:focus-within]:[border-color:var(--idmc-color-primary-300)]',
+        '[&:focus-within]:[box-shadow:0_0_0_3px_var(--idmc-color-primary-10-a10)]',
         '[&:focus-within]:[outline:var(--idmc-stroke-1)_solid_var(--idmc-color-primary-300)]',
         '[&:focus-within]:[outline-offset:-2px]',
         variant === 'chat'
           ? '[border-radius:var(--idmc-radius-4)]'
-          : '[border-radius:var(--idmc-radius-full)]',
+          : '[border-radius:var(--idmc-radius-full)] [animation:idmc-content-in_var(--idmc-motion-duration-enter)_var(--idmc-motion-ease-out)_260ms_backwards]',
       )}
       onSubmit={handleSubmit}
       aria-busy={submitDisabled}

@@ -42,10 +42,11 @@ async function launch(extension) {
   return context
 }
 
-async function portal(context, t) {
+async function portal(context, t, media) {
   const page = await context.newPage()
   page.on('pageerror', error => errors.push(error.message))
   t.after(() => page.close())
+  if (media) await page.emulateMedia(media)
   await page.goto(`${origin}/`)
   await page.getByRole('button', { name: 'Buka chatbot' }).click()
   return page
@@ -183,6 +184,61 @@ test('overlay fits narrow, portrait and landscape viewports', async t => {
   }
   await page.setViewportSize({ width: 390, height: 844 })
   await page.screenshot({ path: '.output/qa/extension-mobile.png' })
+})
+
+test('entrance rises with staggered content and closing remains usable during motion', async t => {
+  const page = await portal(placeholder, t, { reducedMotion: 'no-preference' })
+  const panel = page.getByRole('dialog')
+  const motion = await panel.evaluate(element => {
+    const animations = element.getAnimations({ subtree: true })
+    const entrance = animations.find(animation => animation.effect.target === element)
+    const content = animations.filter(animation => animation.effect.target !== element)
+    for (const animation of animations) animation.pause()
+    entrance.currentTime = 0
+    const start = getComputedStyle(element)
+    const startOpacity = Number(start.opacity)
+    const startY = new DOMMatrixReadOnly(start.transform).m42
+    const delays = content.map(animation => Number(animation.effect.getTiming().delay))
+    for (const animation of animations) animation.finish()
+    return { startOpacity, startY, endOpacity: Number(getComputedStyle(element).opacity), delays }
+  })
+  assert.equal(motion.startOpacity, 0)
+  assert.ok(motion.startY > 0, 'Panel starts below its resting position')
+  assert.equal(motion.endOpacity, 1)
+  assert.ok(new Set(motion.delays).size >= 3, 'Greeting, capsules and composer enter in stages')
+  await page.getByRole('textbox', { name: 'Tulis pesan' }).fill('draft')
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Buka chatbot' }).waitFor()
+  assert.equal(await page.getByRole('button', { name: 'Buka chatbot' }).evaluate(button => button === button.getRootNode().activeElement), true)
+
+  // Close before the delayed child animations end; they must not finish the panel's exit.
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Buka chatbot' }).waitFor()
+  assert.equal(await panel.count(), 0)
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
+  await panel.evaluate(async element => {
+    await Promise.allSettled(element.getAnimations({ subtree: true }).map(animation => animation.finished))
+  })
+  assert.equal(await page.getByRole('textbox', { name: 'Tulis pesan' }).inputValue(), '')
+  assert.equal(await panel.getAttribute('data-state'), 'open')
+})
+
+test('reduced motion shows content immediately and capsules remain reachable at narrow widths', async t => {
+  const page = await portal(placeholder, t)
+  assert.equal(await page.getByRole('dialog').evaluate(element => element.getAnimations({ subtree: true }).length), 0)
+  for (const [width, height] of [[1280, 900], [390, 844], [320, 568], [844, 390]]) {
+    await page.setViewportSize({ width, height })
+    const bounds = await page.locator('.idmc-suggestion-list').evaluate(list => ({
+      width: list.clientWidth, scrollWidth: list.scrollWidth,
+      height: list.clientHeight, scrollHeight: list.scrollHeight,
+    }))
+    assert.ok(bounds.scrollWidth <= bounds.width, 'Capsules do not disappear off the right edge')
+    assert.ok(bounds.scrollHeight <= bounds.height, 'The three supplied suggestions fit without scrolling')
+    assert.equal(await page.locator('.idmc-hero-title').evaluate(element => getComputedStyle(element).opacity), '1')
+  }
+  await page.getByRole('button', { name: 'Statistik pendidikan', exact: true }).click()
+  await page.getByRole('alert').filter({ hasText: 'Layanan chatbot belum tersedia.' }).waitFor()
 })
 
 test('other origins and portal iframes do not receive the chatbot', async t => {

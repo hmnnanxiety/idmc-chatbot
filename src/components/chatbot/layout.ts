@@ -1,7 +1,8 @@
-// Shared widget shell utilities. Exact Figma tokens; no utility-scale rounding.
+// Shared widget shell utilities. Existing Figma palette, spacing and typography.
 export const widgetClasses = [
   '[font:var(--idmc-type-b2)] [letter-spacing:0] [color-scheme:light]',
   '[--idmc-motion-duration-fast:140ms] [--idmc-motion-duration-base:200ms]',
+  '[--idmc-motion-duration-enter:420ms] [--idmc-motion-duration-exit:180ms]',
   '[--idmc-motion-ease-out:cubic-bezier(0.22,_1,_0.36,_1)]',
   '[--idmc-widget-padding-inline:var(--idmc-space-4)] [--idmc-widget-padding-block:var(--idmc-space-4)]',
   '[--idmc-header-height:44px] [--idmc-header-action-size:30px] [--idmc-header-gap:var(--idmc-space-2)]',

@@ -1,8 +1,9 @@
 # Styling architecture
 
-This migration changes styling ownership, not the UI or chat API. Keep the current
-compact Home / Chat / History widget as the baseline; the Figma reference does not
-authorize adding its full-page controls or changing the widget layout.
+The original migration changed styling ownership while preserving the UI and chat
+API. The compact Home / Chat / History widget remains the baseline. The subsequent
+[overlay refinement](features/overlay-elevation-motion.md) adds clearer elevation,
+wrapped capsules and staggered motion using the same palette and components.
 
 ## Editing styles
 
@@ -55,7 +56,7 @@ Per-component CSS and the local host `App.css` are removed only after their rule
 have been migrated. Global fonts/tokens, safe-area handling, dynamic viewport
 height, reduced motion and motion timings remain intentional.
 
-Final migration results: typecheck, lint, production build and all 11 UI tests pass.
+Historical migration results: typecheck, lint, production build and all 11 UI tests pass.
 32 of 35 screenshot pairs are byte-identical. The other three (844x390 Home, Chat,
 error) differ only in text-width/subpixel rendering up to 0.03125px; the sampled
 colors, fonts, spacing, dimensions, borders, animations and responsive layout remain

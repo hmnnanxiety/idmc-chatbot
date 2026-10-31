@@ -25,6 +25,10 @@ export function IconButton({
         'inline-flex flex-none items-center justify-center [inline-size:var(--idmc-header-action-size)]',
         '[block-size:var(--idmc-header-action-size)] [padding:0] overflow-clip [border:0] [border-radius:44px]',
         '[background:var(--idmc-color-neutral-100)] cursor-pointer',
+        '[box-shadow:inset_0_0_0_var(--idmc-stroke-0)_var(--idmc-color-neutral-300)]',
+        '[transition:background-color_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out),_transform_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out)]',
+        '[@media(hover:_hover)]:[&:hover]:[background:var(--idmc-color-primary-10-a10)]',
+        '[&:active]:[transform:scale(0.94)]',
         '[&:focus-visible]:[outline:var(--idmc-stroke-1)_solid_var(--idmc-color-primary-500)]',
         '[&:focus-visible]:[outline-offset:var(--idmc-stroke-1)]',
       )}

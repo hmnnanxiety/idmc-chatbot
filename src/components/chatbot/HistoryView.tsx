@@ -42,6 +42,7 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
               'flex-none [margin:0] [padding:var(--idmc-space-1)_var(--idmc-space-3)]',
               '[color:var(--idmc-color-neutral-600)] [font:var(--idmc-type-b4)] [&]:[font-weight:600]',
               '[letter-spacing:0]',
+              '[animation:idmc-view-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_60ms_backwards]',
             )}
             id={labelId}
           >
@@ -55,12 +56,13 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
             )}
             aria-labelledby={labelId}
           >
-            {items.map((item) => (
+            {items.map((item, index) => (
               <HistoryItem
                 key={item.id}
                 item={item}
                 selected={item.id === selectedId}
                 onSelect={onSelect}
+                entranceIndex={index}
               />
             ))}
           </ul>

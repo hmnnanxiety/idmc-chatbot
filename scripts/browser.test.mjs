@@ -7,6 +7,7 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { setTimeout as delay } from 'node:timers/promises'
 import { chromium } from 'playwright'
+import { createServer as createViteServer } from 'vite'
 
 let backend, placeholder, configured
 const contexts = [], profiles = [], received = [], errors = []
@@ -42,10 +43,11 @@ async function launch(extension) {
   return context
 }
 
-async function portal(context, t) {
+async function portal(context, t, media) {
   const page = await context.newPage()
   page.on('pageerror', error => errors.push(error.message))
   t.after(() => page.close())
+  if (media) await page.emulateMedia(media)
   await page.goto(`${origin}/`)
   await page.getByRole('button', { name: 'Buka chatbot' }).click()
   return page
@@ -54,6 +56,14 @@ async function portal(context, t) {
 async function waitFor(predicate) {
   for (let i = 0; i < 100; i++) { if (predicate()) return; await delay(20) }
   assert.fail('Expected asynchronous condition did not occur')
+}
+
+async function settleMotion(locator) {
+  await locator.evaluate(async element => {
+    await Promise.allSettled(element.getAnimations({ subtree: true })
+      .filter(animation => animation.effect.getTiming().iterations !== Infinity)
+      .map(animation => animation.finished))
+  })
 }
 
 before(async () => {
@@ -185,10 +195,143 @@ test('overlay fits narrow, portrait and landscape viewports', async t => {
   await page.screenshot({ path: '.output/qa/extension-mobile.png' })
 })
 
+test('entrance rises with staggered content and closing remains usable during motion', async t => {
+  const page = await portal(placeholder, t, { reducedMotion: 'no-preference' })
+  const panel = page.getByRole('dialog')
+  const motion = await panel.evaluate(element => {
+    const animations = element.getAnimations({ subtree: true })
+    const entrance = animations.find(animation => animation.effect.target === element)
+    const content = animations.filter(animation => animation.effect.target !== element)
+    for (const animation of animations) animation.pause()
+    entrance.currentTime = 0
+    const start = getComputedStyle(element)
+    const startOpacity = Number(start.opacity)
+    const startY = new DOMMatrixReadOnly(start.transform).m42
+    const delays = content.map(animation => Number(animation.effect.getTiming().delay))
+    for (const animation of animations) animation.finish()
+    return { startOpacity, startY, endOpacity: Number(getComputedStyle(element).opacity), delays }
+  })
+  assert.equal(motion.startOpacity, 0)
+  assert.ok(motion.startY > 0, 'Panel starts below its resting position')
+  assert.equal(motion.endOpacity, 1)
+  assert.ok(new Set(motion.delays).size >= 3, 'Greeting, capsules and composer enter in stages')
+  await page.getByRole('textbox', { name: 'Tulis pesan' }).fill('draft')
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Buka chatbot' }).waitFor()
+  assert.equal(await page.getByRole('button', { name: 'Buka chatbot' }).evaluate(button => button === button.getRootNode().activeElement), true)
+
+  // Close before the delayed child animations end; they must not finish the panel's exit.
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Buka chatbot' }).waitFor()
+  assert.equal(await panel.count(), 0)
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
+  await panel.evaluate(async element => {
+    await Promise.allSettled(element.getAnimations({ subtree: true }).map(animation => animation.finished))
+  })
+  assert.equal(await page.getByRole('textbox', { name: 'Tulis pesan' }).inputValue(), '')
+  assert.equal(await panel.getAttribute('data-state'), 'open')
+})
+
+test('reduced motion shows content immediately and capsules remain reachable at narrow widths', async t => {
+  const page = await portal(placeholder, t)
+  assert.equal(await page.getByRole('dialog').evaluate(element => element.getAnimations({ subtree: true }).length), 0)
+  for (const [width, height] of [[1280, 900], [390, 844], [320, 568], [844, 390]]) {
+    await page.setViewportSize({ width, height })
+    const bounds = await page.locator('.idmc-suggestion-list').evaluate(list => ({
+      width: list.clientWidth, scrollWidth: list.scrollWidth,
+      height: list.clientHeight, scrollHeight: list.scrollHeight,
+    }))
+    assert.ok(bounds.scrollWidth <= bounds.width, 'Capsules do not disappear off the right edge')
+    assert.ok(bounds.scrollHeight <= bounds.height, 'The three supplied suggestions fit without scrolling')
+    assert.equal(await page.locator('.idmc-hero-title').evaluate(element => getComputedStyle(element).opacity), '1')
+  }
+  await page.getByRole('button', { name: 'Statistik pendidikan', exact: true }).click()
+  await page.getByRole('alert').filter({ hasText: 'Layanan chatbot belum tersedia.' }).waitFor()
+})
+
 test('other origins and portal iframes do not receive the chatbot', async t => {
   const page = await portal(placeholder, t)
   assert.equal(await page.frameLocator('iframe').locator('idmc-chatbot-extension').count(), 0)
   await placeholder.route('https://example.org/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Other site</h1>' }))
   await page.goto('https://example.org/extension-test', { waitUntil: 'networkidle' })
   assert.equal(await page.locator('idmc-chatbot-extension').count(), 0)
+})
+
+test('view motion preserves the conversation, stationary gradient and reduced-motion behavior', async t => {
+  const page = await portal(configured, t, { reducedMotion: 'no-preference' })
+  const panel = page.getByRole('dialog')
+  await settleMotion(panel)
+  const surface = await page.locator('.idmc-view').evaluate(view => getComputedStyle(view).backgroundImage)
+  assert.match(surface, /linear-gradient/)
+  assert.match(surface, /rgb\(255, 255, 255\)/)
+  assert.match(surface, /rgb\(255, 243, 207\)/)
+
+  const input = page.getByRole('textbox', { name: 'Tulis pesan' })
+  await input.fill('slow')
+  await input.press('Enter')
+  await page.getByRole('status').waitFor()
+  const composition = await page.locator('.idmc-conversation').evaluate(view => ({
+    surface: getComputedStyle(view).backgroundImage,
+    transform: getComputedStyle(view).transform,
+    readingSurface: getComputedStyle(view.querySelector('.idmc-message-list')).backgroundColor,
+    motion: ['.idmc-top-bar', '.idmc-message-list', '.idmc-chat-input'].map(selector =>
+      getComputedStyle(view.querySelector(selector)).animationName),
+  }))
+  assert.equal(composition.surface, surface)
+  assert.equal(composition.transform, 'none', 'The gradient does not slide when views change')
+  assert.equal(composition.readingSurface, 'rgb(255, 255, 255)')
+  assert.ok(composition.motion.every(name => name !== 'none'))
+  await page.getByRole('cell', { name: '42', exact: true }).waitFor()
+  await settleMotion(panel)
+
+  await input.fill('slow')
+  await input.press('Enter')
+  await page.getByRole('status').waitFor()
+  assert.equal(await page.locator('.idmc-message--user').first().evaluate(message => message.getAnimations().length), 0,
+    'Appending a message does not replay an existing message entrance')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  assert.equal(await panel.evaluate(element => element.getAnimations({ subtree: true }).length), 0,
+    'Reduced motion also stops the loading dots and composer transition')
+  await page.getByRole('status').waitFor({ state: 'detached' })
+
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
+  await page.getByText('Belum ada riwayat percakapan.').waitFor()
+  await settleMotion(panel)
+  assert.equal(await page.locator('.idmc-history').evaluate(view => getComputedStyle(view).backgroundImage), surface)
+  await page.screenshot({ path: '.output/qa/extension-history.png' })
+  await page.getByRole('button', { name: 'Kembali', exact: true }).click()
+  await settleMotion(panel)
+  assert.equal(await page.locator('.idmc-message--user').count(), 2)
+  assert.equal(await input.evaluate(element => element === element.getRootNode().activeElement), true)
+})
+
+test('preview history rows stagger once and selection remains usable on small screens', async t => {
+  const preview = await createViteServer({ server: { host: '127.0.0.1', port: 0 }, clearScreen: false })
+  await preview.listen()
+  t.after(() => preview.close())
+  const page = await placeholder.newPage()
+  page.on('pageerror', error => errors.push(error.message))
+  t.after(() => page.close())
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto(`http://127.0.0.1:${preview.httpServer.address().port}`)
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
+  await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
+  const rows = page.locator('.idmc-history__list > li')
+  assert.equal(await rows.count(), 4)
+  const delays = await rows.evaluateAll(items => items.map(item => parseFloat(getComputedStyle(item).animationDelay)))
+  assert.ok(delays.every((value, index) => index === 0 || value > delays[index - 1]))
+  await settleMotion(page.getByRole('dialog'))
+  await page.getByRole('button', { name: 'Data penduduk DIY', exact: true }).click()
+  assert.equal(await page.getByRole('button', { name: 'Data penduduk DIY', exact: true }).getAttribute('aria-current'), 'true')
+  assert.ok((await rows.evaluateAll(items => items.map(item => item.getAnimations().length))).every(count => count === 0))
+  await page.screenshot({ path: '.output/qa/preview-history-populated.png' })
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  assert.equal(await page.getByRole('dialog').evaluate(element => element.getAnimations({ subtree: true }).length), 0)
+  await page.getByRole('button', { name: 'Data kesehatan Yogyakarta', exact: true }).click()
+  await page.screenshot({ path: '.output/qa/preview-history-mobile.png' })
+  await page.getByRole('button', { name: 'Kembali', exact: true }).click()
+  await page.getByRole('heading', { name: 'Chatbot Data Publik' }).waitFor()
 })

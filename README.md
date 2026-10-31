@@ -90,6 +90,13 @@ Use the complete extension from `main`. The migration retains separate
 `feature/wxt-foundation`, `feature/extension-overlay` and `feature/extension-api`
 branches and commits; see [feature index](docs/features/README.md) for migration history.
 
+The merged `feature/overlay-elevation-motion` feature refines the overlay's border,
+shadow, white/yellow gradient, capsules and motion across Home, Conversation and
+History with the existing palette and components.
+See [overlay refinement](docs/features/overlay-elevation-motion.md) for details and
+review instructions. This refinement is available on `main`; the feature branch
+is retained for documentation.
+
 Styling rules remain in [styling architecture](docs/STYLING_ARCHITECTURE.md).
 The original [frontend polish](docs/FRONTEND_POLISH.md) is historical validation;
 extension-specific behavior is described in the feature docs.

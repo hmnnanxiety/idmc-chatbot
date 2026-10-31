@@ -25,6 +25,7 @@ export function TopBar({ leading, title, actions }: TopBarProps) {
         'idmc-top-bar',
         'flex flex-none items-center justify-between [inline-size:100%]',
         '[min-block-size:var(--idmc-header-height)] [padding:0] [gap:var(--idmc-header-gap)]',
+        '[animation:idmc-view-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_backwards]',
       )}
     >
       {(leading || title) && (

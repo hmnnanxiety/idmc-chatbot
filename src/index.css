@@ -37,14 +37,30 @@
 @keyframes idmc-panel-in {
   from {
     opacity: 0;
-    transform: translateY(var(--idmc-space-2)) scale(0.98);
+    transform: translateY(var(--idmc-space-6)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
 @keyframes idmc-panel-out {
   to {
     opacity: 0;
-    transform: translateY(var(--idmc-space-2)) scale(0.98);
+    transform: translateY(var(--idmc-space-4)) scale(0.98);
+  }
+}
+
+/* Backwards fill keeps delayed content at its starting pose, then releases it. */
+@keyframes idmc-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--idmc-space-3));
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

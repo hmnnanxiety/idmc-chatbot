@@ -32,8 +32,6 @@ export function ConversationView({
         'idmc-chatbot idmc-view idmc-conversation',
         widgetClasses,
         viewClasses,
-        '[animation:idmc-view-in_var(--idmc-motion-duration-base)_var(--idmc-motion-ease-out)]',
-        '[@media(prefers-reduced-motion:_reduce)]:[animation:none]',
       )}
       aria-label="Percakapan"
     >

@@ -14,12 +14,16 @@ export function SuggestionChip({ label, onClick }: SuggestionChipProps) {
       type="button"
       className={cn(
         'idmc-suggestion-chip',
-        'inline-flex [flex:0_0_auto] items-center justify-center [gap:4px] [max-inline-size:max-content]',
-        '[padding:3px_7px] overflow-clip [border:0] [border-radius:var(--idmc-radius-full)]',
-        '[background:var(--idmc-color-primary-10-a10)] [color:var(--idmc-color-primary-700)] [font-size:11px]',
-        '[line-height:1.2] [font-weight:500] [letter-spacing:0] text-center whitespace-nowrap cursor-pointer',
+        'inline-flex [flex:0_1_auto] items-center justify-center [gap:var(--idmc-space-1)] [max-inline-size:100%]',
+        '[min-block-size:var(--idmc-space-7)] [padding:var(--idmc-space-1)_var(--idmc-space-2)]',
+        '[border:var(--idmc-stroke-0)_solid_var(--idmc-color-primary-10-a10)] [border-radius:var(--idmc-radius-full)]',
+        '[background:var(--idmc-color-primary-10-a10)] [color:var(--idmc-color-primary-700)] [font:var(--idmc-type-b4)]',
+        '[&]:[font-weight:500] [letter-spacing:0] text-start [overflow-wrap:anywhere] cursor-pointer',
+        '[transition:background-color_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out),_transform_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out)]',
+        '[@media(hover:_hover)]:[&:hover]:[background:var(--idmc-color-primary-100)]',
+        '[&:active]:[transform:scale(0.97)]',
         '[&:focus-visible]:[outline:var(--idmc-stroke-1)_solid_var(--idmc-color-primary-500)]',
-        '[&:focus-visible]:[outline-offset:var(--idmc-stroke-1)]',
+        '[&:focus-visible]:[outline-offset:calc(-1_*_var(--idmc-stroke-1))]',
       )}
       onClick={onClick}
     >

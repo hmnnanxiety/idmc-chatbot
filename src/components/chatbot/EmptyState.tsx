@@ -10,8 +10,9 @@ export function EmptyState({ message }: EmptyStateProps) {
     <p
       className={cn(
         'idmc-empty-state',
-        '[margin:0] [padding:var(--idmc-space-4)_var(--idmc-space-3)] [color:var(--idmc-color-neutral-600)]',
+        '[margin:0] [padding:var(--idmc-space-4)_var(--idmc-space-3)] [color:var(--idmc-color-neutral-700)]',
         '[font:var(--idmc-type-b3)] [overflow-wrap:anywhere]',
+        '[animation:idmc-content-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_80ms_backwards]',
       )}
     >
       {message}

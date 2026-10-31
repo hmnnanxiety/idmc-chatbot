@@ -4,10 +4,10 @@ The frontend is now a WXT Chromium extension for `https://idmc.jogjaprov.go.id/*
 The completed migration is available on `main`. Feature branches are retained
 to document each part of the migration.
 
-The current `feature/overlay-elevation-motion` branch adds a clearer panel border
+The merged `feature/overlay-elevation-motion` feature adds a clearer panel border
 and shadow, a white/yellow gradient, wrapped capsules and entrance motion across
 Home, Conversation and History. It reuses the existing
-palette and components and is not yet merged into `main`. See its
+palette and components and is available on `main` as of 2026-10-31. See its
 [feature document](docs/features/overlay-elevation-motion.md) for review instructions.
 
 - WXT foundation and portal overlay are separate feature commits/branches.

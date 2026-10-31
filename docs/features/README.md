@@ -14,12 +14,12 @@ dependency order shown below.
 
 | Branch | Base | Documentation | Status |
 | --- | --- | --- | --- |
-| `feature/overlay-elevation-motion` | `main` | [Overlay separation and motion](overlay-elevation-motion.md) | Feature branch; not merged |
+| `feature/overlay-elevation-motion` | `main` | [Overlay separation and motion](overlay-elevation-motion.md) | Merged into `main` on 2026-10-31 |
 
-Use `main` to run the merged extension, or the feature branch to review the latest
-overlay refinement. New independent features should start
+Use `main` to run the complete extension, including the overlay refinement. The
+feature branch is retained for documentation. New independent features should start
 from updated `main` using a new `feature/` branch; do not append unrelated work to
-these completed migration branches. The overlay refinement is authorized to reuse
+these completed feature branches. The overlay refinement is authorized to reuse
 the existing palette and components; record visual decisions in its feature doc.
 
 For each feature, document the user-visible result, scope, architecture decisions,

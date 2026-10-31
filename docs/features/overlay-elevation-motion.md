@@ -4,7 +4,7 @@ Branch: `feature/overlay-elevation-motion`
 
 Base: `main` (`a34ae8e`)
 
-Status: implemented on the feature branch; not merged into `main`.
+Status: merged into `main` on 2026-10-31. The feature branch is retained for documentation.
 
 ## Problem and result
 
@@ -99,7 +99,7 @@ stay out of Git.
 
 To review the animation on IDMC:
 
-1. Check out this branch and run `npm run build`.
+1. Check out updated `main` and run `npm run build`.
 2. Reload the unpacked extension from `.output/chrome-mv3`, then refresh the portal.
 3. Open the launcher and watch the greeting, capsules and input settle into place.
 4. Submit a question and visit History, then return. Compare the stationary

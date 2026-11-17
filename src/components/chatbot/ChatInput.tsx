@@ -39,7 +39,7 @@ export function ChatInput({
     <form
       className={cn(
         `idmc-chat-input idmc-chat-input--${variant}`,
-        'flex flex-none items-center justify-end [inline-size:100%] [block-size:var(--idmc-composer-height)]',
+        'flex flex-none items-end justify-end [inline-size:100%] [min-block-size:var(--idmc-composer-height)]',
         '[margin:0] [padding:5px_7px] overflow-clip',
         '[background:var(--idmc-color-neutral-100)]',
         '[border:var(--idmc-stroke-0)_solid_var(--idmc-color-neutral-300)] [box-shadow:var(--idmc-shadow-e1)]',
@@ -55,22 +55,26 @@ export function ChatInput({
       onSubmit={handleSubmit}
       aria-busy={submitDisabled}
     >
-      <input
+      <textarea
         className={cn(
           'idmc-chat-input__field',
-          '[flex:1_1_auto] self-stretch [min-inline-size:0] [padding-inline:var(--idmc-space-5)] [border:0]',
+          '[flex:1_1_auto] [min-inline-size:0] [padding-inline:var(--idmc-space-5)] [border:0]',
+          'resize-none [field-sizing:content] overflow-y-auto [max-block-size:min(128px,30dvh)]',
+          '[padding-block:max(8px,calc((var(--idmc-composer-height)_-_36px)_/_2))]',
           '[background:transparent] [color:var(--idmc-color-neutral-900)] [font:var(--idmc-type-b2)]',
           '[letter-spacing:0] [outline:0] [&::placeholder]:[color:var(--idmc-color-neutral-500)]',
           'narrow:[padding-inline:var(--idmc-space-3)]',
         )}
-        type="text"
+        rows={1}
         name="message"
         aria-label={label}
         aria-describedby={submitDisabled ? loadingLabelId : undefined}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === 'Enter' && event.nativeEvent.isComposing) event.preventDefault()
+          if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return
+          event.preventDefault()
+          event.currentTarget.form?.requestSubmit()
         }}
         placeholder={placeholder}
         autoComplete="off"

@@ -13,6 +13,8 @@ export interface ConversationViewProps {
   /** Called with the typed text when the composer is submitted. */
   onSend?: (text: string) => void
   /** Shows the header close button when provided. */
+  onMaximize?: () => void
+  maximizeDisabled?: boolean
   onClose?: () => void
   /** Shows the header history button when provided. */
   onOpenHistory?: () => void
@@ -25,6 +27,8 @@ export function ConversationView({
   onSend,
   onClose,
   onOpenHistory,
+  onMaximize,
+  maximizeDisabled,
 }: ConversationViewProps) {
   return (
     <section
@@ -35,7 +39,7 @@ export function ConversationView({
       )}
       aria-label="Percakapan"
     >
-      <ChatHeader title="Chatbot Data Publik" onOpenHistory={onOpenHistory} onClose={onClose} />
+      <ChatHeader onMaximize={onMaximize} maximizeDisabled={maximizeDisabled} title="Chatbot Data Publik" onOpenHistory={onOpenHistory} onClose={onClose} />
       <MessageList messages={messages} isAssistantLoading={isAssistantLoading} />
       <div
         className={cn(

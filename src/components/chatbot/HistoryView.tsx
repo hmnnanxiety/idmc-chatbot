@@ -10,14 +10,18 @@ export interface HistoryViewProps {
   items: ChatHistoryItem[]
   /** The current conversation; drawn with the stronger background. */
   selectedId?: string | null
-  /** Visual selection only for now: no conversation is restored. */
   onSelect?: (id: string) => void
+  onNewChat?: () => void
+  pending?: boolean
+  error?: string
   onBack: () => void
+  onMaximize?: () => void
+  maximizeDisabled?: boolean
   onClose?: () => void
 }
 
 /** History state: a compact "Recents" list. An internal widget view, not a sidebar or route. */
-export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: HistoryViewProps) {
+export function HistoryView({ items, selectedId, onSelect, onNewChat, pending, error, onBack, onClose, onMaximize, maximizeDisabled }: HistoryViewProps) {
   const labelId = useId()
 
   return (
@@ -25,7 +29,19 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
       className={cn('idmc-chatbot idmc-view idmc-history', widgetClasses, viewClasses)}
       aria-label="Riwayat chat"
     >
-      <ChatHeader title="Riwayat Chat" onBack={onBack} onClose={onClose} />
+      <ChatHeader onMaximize={onMaximize} maximizeDisabled={maximizeDisabled} title="Riwayat Chat" onBack={onBack} onClose={onClose} />
+      {onNewChat && (
+        <button
+          type="button"
+          onClick={onNewChat}
+          disabled={pending}
+          className="flex-none self-start rounded-lg border-0 px-3 py-2 text-sm font-medium cursor-pointer [background:var(--idmc-color-primary-10-a10)] [color:var(--idmc-color-primary-500)] disabled:opacity-50 disabled:cursor-wait"
+        >
+          Chat baru
+        </button>
+      )}
+      {pending && <p role="status" className="text-sm">Tunggu jawaban selesai untuk berpindah chat.</p>}
+      {error && <p role="status" className="text-sm">{error}</p>}
 
       {items.length === 0 ? (
         <EmptyState message="Belum ada riwayat percakapan." />
@@ -46,7 +62,7 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
             )}
             id={labelId}
           >
-            Recents
+            Terbaru
           </h2>
           <ul
             className={cn(
@@ -62,6 +78,7 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
                 item={item}
                 selected={item.id === selectedId}
                 onSelect={onSelect}
+                disabled={pending}
                 entranceIndex={index}
               />
             ))}

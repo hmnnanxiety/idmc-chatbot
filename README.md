@@ -1,8 +1,7 @@
-# IDMC Chatbot Browser Extension
+# IDMC Chatbot
 
 React + TypeScript + Tailwind chatbot, packaged with WXT as a Chromium Manifest V3
-extension for **https://idmc.jogjaprov.go.id/**. The original Figma widget design
-and standalone Vite preview are retained.
+extension for **https://idmc.jogjaprov.go.id/** and as a standalone Vite website.
 
 ## Requirements
 
@@ -33,13 +32,14 @@ be connected later without rebuilding the UI.
 | `npm run dev:edge` | WXT development workflow targeting Edge |
 | `npm run build` | Typecheck and build `.output/chrome-mv3` |
 | `npm run zip` | Build and create an extension ZIP in `.output` |
-| `npm run dev:web` | Original standalone Vite preview |
-| `npm run build:web` | Build the standalone preview to `dist` |
-| `npm run preview:web` | Serve the built standalone preview |
+| `npm run dev:web` | Run the standalone website locally. Add `?view=overlay` to preview the floating widget |
+| `npm run build:web` | Build the standalone website to `dist` |
+| `npm run preview:web` | Serve the built website |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | Generate WXT types and check app/config types |
 | `npm test` | UI and extension API tests |
 | `npm run test:browser` | Build and test real extensions with a local mock |
+| `npm run test:web` | Test the full-page chat and maximize with a local mock |
 
 For browser tests, install the matching Chromium runtime once with
 `npx playwright install chromium`. The test uses temporary isolated profiles and
@@ -66,7 +66,16 @@ permissions. Its request timeout is 25 seconds; slower RAG responses need an
 agreed streaming/job API. Never bundle model provider keys in `WXT_` variables.
 See [AI handoff](docs/AI_HANDOFF.md) and [API feature](docs/features/extension-api.md).
 
-The Vite preview separately retains `/api/chat` proxied to `127.0.0.1:8000/chat`.
+Vite proxies `/api/chat` to `127.0.0.1:8000/chat` during web development.
+In production, serve the website with a reverse proxy for `/api/chat` or set
+`VITE_CHAT_API_URL` to the HTTPS endpoint with CORS configured for the website
+origin. Set `WXT_WEB_APP_URL` to the website URL when building the extension
+to enable its maximize button. See [.env.example](.env.example).
+
+The website and extension save conversations in their own browser storage.
+Use **Riwayat chat** in the extension to reopen a chat or start a new one.
+Closing the overlay keeps the active transcript and cancels any pending reply.
+Use **Shift+Enter** to add a line and **Enter** to send.
 
 ## Architecture
 
@@ -76,7 +85,7 @@ The Vite preview separately retains `/api/chat` proxied to `127.0.0.1:8000/chat`
 - `src/extension/`: mount, isolated styles/fonts and runtime messaging.
 - `src/components/chatbot/`: existing Home, Conversation and History components.
 - `src/api/`: shared HTTP adapter and preview transport.
-- `src/App.tsx`, `src/main.tsx`, `vite.config.ts`: standalone development preview.
+- `src/web/`, `src/App.tsx`, and `vite.config.ts`: standalone website and overlay preview.
 
 Fonts and icons are bundled locally. The extension does not scrape portal data,
 read portal authentication or persist chats. Only submitted questions are sent to

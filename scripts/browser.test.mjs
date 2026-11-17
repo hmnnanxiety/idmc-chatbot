@@ -7,7 +7,6 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { setTimeout as delay } from 'node:timers/promises'
 import { chromium } from 'playwright'
-import { createServer as createViteServer } from 'vite'
 
 let backend, placeholder, configured
 const contexts = [], profiles = [], received = [], errors = []
@@ -29,6 +28,7 @@ async function launch(extension) {
   profiles.push(profile)
   const context = await chromium.launchPersistentContext(profile, {
     channel: 'chromium', headless: true, reducedMotion: 'reduce',
+    timeout: 180_000,
     viewport: { width: 1280, height: 900 },
     args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
   })
@@ -83,9 +83,15 @@ before(async () => {
     res.end(JSON.stringify({ reply: answer }))
   })
   await new Promise(resolve => backend.listen(0, '127.0.0.1', resolve))
-  placeholder = await launch(build('production', ''))
-  configured = await launch(build('test', `http://127.0.0.1:${backend.address().port}/chat`))
-}, { timeout: 180_000 })
+  const placeholderBuild = build('production', '')
+  const configuredBuild = build('test', `http://127.0.0.1:${backend.address().port}/chat`)
+  const results = await Promise.allSettled([launch(placeholderBuild), launch(configuredBuild)])
+  const [placeholderResult, configuredResult] = results
+  if (placeholderResult.status === 'rejected') throw placeholderResult.reason
+  if (configuredResult.status === 'rejected') throw configuredResult.reason
+  placeholder = placeholderResult.value
+  configured = configuredResult.value
+}, { timeout: 300_000 })
 
 after(async () => {
   for (const context of contexts) await context.close()
@@ -105,6 +111,7 @@ test('production manifest restricts injection and grants no API host for the pla
   assert.deepEqual(manifest.content_scripts[0].matches, [`${origin}/*`])
   assert.equal(manifest.content_scripts[0].all_frames, false)
   assert.deepEqual(manifest.host_permissions ?? [], [])
+  assert.deepEqual(manifest.permissions, ['storage'])
   assert.ok(manifest.background.service_worker)
   assert.ok(manifest.icons['128'])
 })
@@ -138,12 +145,20 @@ test('placeholder displays unavailable without calling the backend', async t => 
   assert.equal(received.length, count)
 })
 
-test('configured worker sends the contract and renders Markdown', async t => {
+test('configured worker sends multiline messages and renders Markdown', async t => {
   const page = await portal(configured, t)
-  await page.getByRole('textbox', { name: 'Tulis pesan' }).fill('Data penduduk DIY')
-  await page.getByRole('textbox', { name: 'Tulis pesan' }).press('Enter')
+  const input = page.getByRole('textbox', { name: 'Tulis pesan' })
+  const count = received.length
+  await input.fill('Data penduduk DIY')
+  await input.press('Shift+Enter')
+  await input.press('End')
+  await input.pressSequentially('Tahun 2026')
+  const question = 'Data penduduk DIY\nTahun 2026'
+  assert.equal(await input.inputValue(), question)
+  assert.equal(received.length, count)
+  await input.press('Enter')
   await page.getByRole('cell', { name: '42', exact: true }).waitFor()
-  assert.deepEqual(received.at(-1), { message: 'Data penduduk DIY', method: 'POST', cookie: undefined })
+  assert.deepEqual(received.at(-1), { message: question, method: 'POST', cookie: undefined })
   assert.equal(await page.getByRole('textbox', { name: 'Tulis pesan' }).evaluate(input => input === input.getRootNode().activeElement), true)
   await page.screenshot({ path: '.output/qa/extension-conversation.png' })
 })
@@ -164,7 +179,7 @@ test('pending requests preserve drafts and prevent duplicate sends', async t => 
   assert.equal(await input.inputValue(), 'next draft')
 })
 
-test('closing cancels the fetch and reopening starts fresh', async t => {
+test('closing cancels the fetch and reopening preserves the conversation', async t => {
   const page = await portal(configured, t)
   const count = received.length, previousCancelled = cancelled
   await page.getByRole('textbox', { name: 'Tulis pesan' }).fill('slow')
@@ -173,7 +188,9 @@ test('closing cancels the fetch and reopening starts fresh', async t => {
   await page.getByRole('button', { name: 'Tutup chatbot' }).click()
   await waitFor(() => cancelled > previousCancelled)
   await page.getByRole('button', { name: 'Buka chatbot' }).click()
-  assert.equal(await page.getByRole('log').count(), 0)
+  await page.getByRole('log').getByText('slow', { exact: true }).waitFor()
+  await page.getByRole('alert').filter({ hasText: 'Jawaban dihentikan' }).waitFor()
+  assert.equal(await page.getByRole('status').count(), 0)
 })
 
 test('backend failures end loading and show the existing error state', async t => {
@@ -297,7 +314,7 @@ test('view motion preserves the conversation, stationary gradient and reduced-mo
 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
-  await page.getByText('Belum ada riwayat percakapan.').waitFor()
+  await page.getByRole('button', { name: 'slow', exact: true }).first().waitFor()
   await settleMotion(panel)
   assert.equal(await page.locator('.idmc-history').evaluate(view => getComputedStyle(view).backgroundImage), surface)
   await page.screenshot({ path: '.output/qa/extension-history.png' })
@@ -307,31 +324,43 @@ test('view motion preserves the conversation, stationary gradient and reduced-mo
   assert.equal(await input.evaluate(element => element === element.getRootNode().activeElement), true)
 })
 
-test('preview history rows stagger once and selection remains usable on small screens', async t => {
-  const preview = await createViteServer({ server: { host: '127.0.0.1', port: 0 }, clearScreen: false })
-  await preview.listen()
-  t.after(() => preview.close())
-  const page = await placeholder.newPage()
-  page.on('pageerror', error => errors.push(error.message))
-  t.after(() => page.close())
-  await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto(`http://127.0.0.1:${preview.httpServer.address().port}`)
-  await page.getByRole('button', { name: 'Buka chatbot' }).click()
-  await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
-  const rows = page.locator('.idmc-history__list > li')
-  assert.equal(await rows.count(), 4)
-  const delays = await rows.evaluateAll(items => items.map(item => parseFloat(getComputedStyle(item).animationDelay)))
+test('extension history restores a chat after a new chat and portal reload', async t => {
+  const page = await portal(configured, t, { reducedMotion: 'no-preference' })
+  const input = page.getByRole('textbox', { name: 'Tulis pesan' })
+  const openHistory = () => page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
+  await input.fill('Data pendidikan Gunungkidul')
+  await input.press('Enter')
+  await page.getByRole('cell', { name: '42', exact: true }).waitFor()
+  await openHistory()
+  await page.getByRole('button', { name: 'Data pendidikan Gunungkidul', exact: true }).waitFor()
+  await page.getByRole('button', { name: 'Chat baru', exact: true }).click()
+  const savedQuestion = 'Jumlah penduduk Sleman'
+  await input.fill(savedQuestion)
+  await input.press('Enter')
+  await page.getByRole('cell', { name: '42', exact: true }).waitFor()
+  await openHistory()
+  const savedRow = page.getByRole('button', { name: savedQuestion, exact: true })
+  await savedRow.waitFor()
+  assert.equal(await savedRow.getAttribute('aria-current'), 'true')
+  const delays = await page.locator('.idmc-history__list > li').evaluateAll(items =>
+    items.slice(0, 6).map(item => parseFloat(getComputedStyle(item).animationDelay)))
+  assert.ok(delays.length > 1)
   assert.ok(delays.every((value, index) => index === 0 || value > delays[index - 1]))
   await settleMotion(page.getByRole('dialog'))
-  await page.getByRole('button', { name: 'Data penduduk DIY', exact: true }).click()
-  assert.equal(await page.getByRole('button', { name: 'Data penduduk DIY', exact: true }).getAttribute('aria-current'), 'true')
-  assert.ok((await rows.evaluateAll(items => items.map(item => item.getAnimations().length))).every(count => count === 0))
-  await page.screenshot({ path: '.output/qa/preview-history-populated.png' })
+  await page.screenshot({ path: '.output/qa/extension-history-populated.png' })
+  await page.getByRole('button', { name: 'Chat baru', exact: true }).click()
+  await page.getByRole('heading', { name: 'Chatbot Data Publik' }).waitFor()
+  assert.equal(await page.getByRole('log').count(), 0)
+
+  await page.reload()
+  await page.getByRole('button', { name: 'Buka chatbot' }).click()
   await page.setViewportSize({ width: 320, height: 568 })
   await page.emulateMedia({ reducedMotion: 'reduce' })
+  await openHistory()
+  await savedRow.waitFor()
   assert.equal(await page.getByRole('dialog').evaluate(element => element.getAnimations({ subtree: true }).length), 0)
-  await page.getByRole('button', { name: 'Data kesehatan Yogyakarta', exact: true }).click()
-  await page.screenshot({ path: '.output/qa/preview-history-mobile.png' })
-  await page.getByRole('button', { name: 'Kembali', exact: true }).click()
-  await page.getByRole('heading', { name: 'Chatbot Data Publik' }).waitFor()
+  await page.screenshot({ path: '.output/qa/extension-history-mobile.png' })
+  await savedRow.click()
+  await page.getByRole('log').getByText(savedQuestion, { exact: true }).waitFor()
+  await page.getByRole('cell', { name: '42', exact: true }).waitFor()
 })

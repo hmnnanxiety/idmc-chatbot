@@ -106,7 +106,8 @@ test('empty/pending composer disables send, not the draft field', () => {
   for (const submitDisabled of [false, true]) {
     const html = render('ChatInput', { submitDisabled })
     assert.match(html, /<button[^>]*disabled/)
-    assert.doesNotMatch(html, /<input[^>]*disabled/)
+    assert.match(html, /<textarea/)
+    assert.doesNotMatch(html, /<textarea[^>]*disabled/)
   }
   assert.match(render('ChatInput', { submitDisabled: true }), /Menunggu jawaban asisten/)
 })

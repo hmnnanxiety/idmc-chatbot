@@ -1,3 +1,4 @@
+import { Maximize2 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import type { ReactNode } from 'react'
 import closeIconSrc from '../../assets/icon-close.svg'
@@ -68,13 +69,21 @@ export interface TopBarActionsProps {
   /** When provided, the header shows the history button, immediately left of close. */
   onOpenHistory?: () => void
   /** When provided, the header shows a close button (the overlay's only close control). */
+  onMaximize?: () => void
+  maximizeDisabled?: boolean
   onClose?: () => void
 }
 
 /** The standard right-hand header buttons: [history] [close]. */
-export function TopBarActions({ onOpenHistory, onClose }: TopBarActionsProps) {
+export function TopBarActions({ onOpenHistory, onClose, onMaximize, maximizeDisabled }: TopBarActionsProps) {
   return (
     <>
+      {onMaximize && (
+        <button type="button" aria-label="Buka di tab baru" title={maximizeDisabled ? 'Tunggu jawaban selesai untuk membuka di tab baru' : 'Buka di tab baru'} disabled={maximizeDisabled} onClick={onMaximize}
+          className="idmc-maximize inline-flex items-center justify-center [width:30px] [height:30px] [padding:0] [border:1px_solid_var(--idmc-color-neutral-300)] rounded-full bg-white [color:var(--idmc-color-primary-500)] cursor-pointer disabled:opacity-40 disabled:cursor-wait hover:[background:var(--idmc-color-primary-10-a10)] focus-visible:[outline:2px_solid_var(--idmc-color-primary-300)]">
+          <Maximize2 size={17} />
+        </button>
+      )}
       {onOpenHistory && (
         // Existing Figma asset, not redrawn. Inset matches the close icon so both
         // buttons draw their artwork in the same 20px box.

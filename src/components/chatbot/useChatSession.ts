@@ -8,14 +8,13 @@ const CHAT_ERROR_MESSAGE =
   'Maaf, terjadi kesalahan saat menghubungi server. Silakan coba lagi.'
 
 /** In-memory request lifecycle only; closing still discards the conversation. */
-export function useChatSession(requestReply: ChatTransport = sendChatMessage) {
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+export function useChatSession(requestReply: ChatTransport = sendChatMessage, initialMessages: ChatMessage[] = []) {
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
   const [isAssistantLoading, setIsAssistantLoading] = useState(false)
-  const nextMessageId = useRef(0)
   const requestRef = useRef<AbortController | null>(null)
 
   const appendMessage = useCallback((role: MessageRole, text: string, status?: 'error') => {
-    const id = `m${nextMessageId.current++}`
+    const id = crypto.randomUUID()
     setMessages((previous) => [...previous, { id, role, text, status }])
   }, [])
 

@@ -14,6 +14,8 @@ export interface HomeViewProps {
   /** Called with the chip label when a suggestion is clicked. */
   onSelectSuggestion?: (text: string) => void
   /** Shows the header close button when provided. */
+  onMaximize?: () => void
+  maximizeDisabled?: boolean
   onClose?: () => void
   /** Shows the header history button when provided. */
   onOpenHistory?: () => void
@@ -26,13 +28,15 @@ export function HomeView({
   onSelectSuggestion,
   onClose,
   onOpenHistory,
+  onMaximize,
+  maximizeDisabled,
 }: HomeViewProps) {
   return (
     <section
       className={cn('idmc-chatbot idmc-view idmc-home', widgetClasses, viewClasses)}
       aria-label="Beranda"
     >
-      <ChatHeader onOpenHistory={onOpenHistory} onClose={onClose} />
+      <ChatHeader onMaximize={onMaximize} maximizeDisabled={maximizeDisabled} onOpenHistory={onOpenHistory} onClose={onClose} />
 
       <main
         className={cn(

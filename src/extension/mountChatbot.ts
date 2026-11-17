@@ -15,6 +15,7 @@ export function mountChatbot(container: HTMLElement) {
     // No sample history is presented as an actual saved conversation.
     historyItems: [],
     requestReply: sendExtensionChatMessage,
+    expandedUrl: import.meta.env.WXT_WEB_APP_URL || (import.meta.env.DEV ? 'http://localhost:5173' : undefined),
   }))
   return root
 }

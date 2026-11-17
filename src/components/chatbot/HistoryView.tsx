@@ -13,11 +13,13 @@ export interface HistoryViewProps {
   /** Visual selection only for now: no conversation is restored. */
   onSelect?: (id: string) => void
   onBack: () => void
+  onMaximize?: () => void
+  maximizeDisabled?: boolean
   onClose?: () => void
 }
 
 /** History state: a compact "Recents" list. An internal widget view, not a sidebar or route. */
-export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: HistoryViewProps) {
+export function HistoryView({ items, selectedId, onSelect, onBack, onClose, onMaximize, maximizeDisabled }: HistoryViewProps) {
   const labelId = useId()
 
   return (
@@ -25,7 +27,7 @@ export function HistoryView({ items, selectedId, onSelect, onBack, onClose }: Hi
       className={cn('idmc-chatbot idmc-view idmc-history', widgetClasses, viewClasses)}
       aria-label="Riwayat chat"
     >
-      <ChatHeader title="Riwayat Chat" onBack={onBack} onClose={onClose} />
+      <ChatHeader onMaximize={onMaximize} maximizeDisabled={maximizeDisabled} title="Riwayat Chat" onBack={onBack} onClose={onClose} />
 
       {items.length === 0 ? (
         <EmptyState message="Belum ada riwayat percakapan." />

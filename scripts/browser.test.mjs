@@ -315,7 +315,7 @@ test('preview history rows stagger once and selection remains usable on small sc
   page.on('pageerror', error => errors.push(error.message))
   t.after(() => page.close())
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto(`http://127.0.0.1:${preview.httpServer.address().port}`)
+  await page.goto(`http://127.0.0.1:${preview.httpServer.address().port}/?view=overlay`)
   await page.getByRole('button', { name: 'Buka chatbot' }).click()
   await page.getByRole('button', { name: 'Riwayat chat', exact: true }).click()
   const rows = page.locator('.idmc-history__list > li')

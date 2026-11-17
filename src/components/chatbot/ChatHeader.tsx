@@ -6,18 +6,20 @@ export interface ChatHeaderProps {
   title?: string
   onBack?: () => void
   onOpenHistory?: () => void
+  onMaximize?: () => void
+  maximizeDisabled?: boolean
   onClose?: () => void
 }
 
 /** Shared view controls; TopBar remains the reusable layout primitive. */
-export function ChatHeader({ title, onBack, onOpenHistory, onClose }: ChatHeaderProps) {
+export function ChatHeader({ title, onBack, onOpenHistory, onClose, onMaximize, maximizeDisabled }: ChatHeaderProps) {
   return (
     <TopBar
       title={title}
       leading={onBack && (
         <IconButton label="Kembali" iconSrc={backIconSrc} iconInset="8.33%" onClick={onBack} />
       )}
-      actions={<TopBarActions onOpenHistory={onOpenHistory} onClose={onClose} />}
+      actions={<TopBarActions onMaximize={onMaximize} maximizeDisabled={maximizeDisabled} onOpenHistory={onOpenHistory} onClose={onClose} />}
     />
   )
 }

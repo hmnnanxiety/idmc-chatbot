@@ -9,6 +9,7 @@ import { HomeView } from './HomeView'
 import type { ChatHistoryItem, ChatUser } from './types'
 import { useChatSession } from './useChatSession'
 import type { ChatTransport } from '../../api/chatRequest'
+import { expandedChatUrl, newConversation } from './conversation'
 
 type ChatView = 'home' | 'chat' | 'history'
 
@@ -27,6 +28,7 @@ export interface ChatOverlayProps {
   historyItems?: ChatHistoryItem[]
   /** Extension transport; the standalone preview defaults to its Vite API proxy. */
   requestReply?: ChatTransport
+  expandedUrl?: string
 }
 
 /**
@@ -39,12 +41,21 @@ export interface ChatOverlayProps {
  * FastAPI `/chat` endpoint; the typing indicator shows while that request is
  * pending, then the reply (or a simple error message) is appended.
  */
-export function ChatOverlay({ user, suggestions, historyItems = [], requestReply }: ChatOverlayProps) {
+export function ChatOverlay({ user, suggestions, historyItems = [], requestReply, expandedUrl }: ChatOverlayProps) {
   const [phase, setPhase] = useState<OverlayPhase>('closed')
   const [view, setView] = useState<ChatView>('home')
   const { messages, isAssistantLoading, sendMessage, resetConversation } = useChatSession(requestReply)
   // Visual selection in History only; no conversation is restored.
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
+  const [expandError, setExpandError] = useState('')
+  const maximize = expandedUrl ? () => {
+    try {
+      window.open(expandedChatUrl(expandedUrl, newConversation(messages)), '_blank', 'noopener,noreferrer')
+      setExpandError('')
+    } catch (error) {
+      setExpandError(error instanceof Error ? error.message : 'Tab baru gagal dibuka.')
+    }
+  } : undefined
 
   const panelRef = useRef<HTMLDivElement>(null)
   const launcherRef = useRef<HTMLButtonElement>(null)
@@ -55,6 +66,7 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
   // Final step of closing: unmount the panel and reset to Home with no messages.
   const finishClose = useCallback(() => {
     resetConversation()
+    setExpandError('')
     setPhase('closed')
     setView('home')
     setSelectedHistoryId(null)
@@ -172,6 +184,8 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
         >
           {view === 'home' && (
             <HomeView
+              onMaximize={maximize}
+              maximizeDisabled={isAssistantLoading}
               user={user}
               suggestions={suggestions}
               onSubmit={startConversation}
@@ -182,6 +196,8 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
           )}
           {view === 'chat' && (
             <ConversationView
+              onMaximize={maximize}
+              maximizeDisabled={isAssistantLoading}
               user={user}
               messages={messages}
               isAssistantLoading={isAssistantLoading}
@@ -192,6 +208,8 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
           )}
           {view === 'history' && (
             <HistoryView
+              onMaximize={maximize}
+              maximizeDisabled={isAssistantLoading}
               items={historyItems}
               selectedId={selectedHistoryId}
               onSelect={setSelectedHistoryId}
@@ -199,6 +217,7 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
               onClose={requestClose}
             />
           )}
+          {expandError && <div role="alert" className="absolute bottom-0 inset-x-0 bg-white p-3 text-sm">{expandError}</div>}
         </div>
       )}
     </div>

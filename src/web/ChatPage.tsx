@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, MessageSquare, Plus, Trash2 } from 'lucide-react'
-import chatbotIcon from '../assets/figma/chatbot-icon.svg'
+import idmcIcon from '../assets/figma/idmc-logo.svg'
 import {
   Sidebar,
   SidebarContent,
@@ -84,7 +84,6 @@ function Conversation({
         />
       ) : (
         <div className="web-welcome">
-          <img className="web-welcome-icon" src={chatbotIcon} alt="" />
           <HeroTitle
             title="Chatbot Data Publik"
             tagline="Jelajahi Data, Kenali Yogyakarta."
@@ -190,7 +189,7 @@ function ChatWorkspace() {
             target="_blank"
             rel="noreferrer"
           >
-            <img src={chatbotIcon} alt="" />
+            <img src={idmcIcon} alt="" />
             <span>
               IDMC
               <span className="web-brand-caption">
@@ -255,14 +254,14 @@ function ChatWorkspace() {
         <header className="web-header">
           <SidebarTrigger />
           <span>Chatbot Data Publik</span>
-          <button
+          {/* <button
             className="web-icon-button web-header-new"
             type="button"
             aria-label="Chat baru"
             onClick={() => select(newConversation())}
           >
             <Plus size={20} />
-          </button>
+          </button> */}
         </header>
         {notice && (
           <div className="web-notice" role="status">

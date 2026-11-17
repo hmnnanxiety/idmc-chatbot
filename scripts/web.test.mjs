@@ -50,6 +50,51 @@ async function send(page, text) {
   await page.locator('.idmc-message--assistant').last().waitFor()
 }
 
+test('multiline composer grows, scrolls and keeps send in its own column', async (t) => {
+  const { page } = await open(t)
+  const input = page.getByRole('textbox', { name: 'Tulis pesan' })
+  const sendButton = page.getByRole('button', { name: 'Kirim pesan' })
+  const dimensions = () => input.evaluate((field) => {
+    const composer = field.form.getBoundingClientRect()
+    const button = field.form.querySelector('button').parentElement.getBoundingClientRect()
+    return {
+      height: composer.height,
+      fieldHeight: field.clientHeight,
+      scrollHeight: field.scrollHeight,
+      gap: button.left - field.getBoundingClientRect().right,
+      buttonInset: composer.bottom - button.bottom,
+    }
+  })
+
+  for (const overlay of [false, true]) {
+    if (overlay) {
+      await page.setViewportSize({ width: 390, height: 600 })
+      await page.goto(origin + '/?view=overlay')
+      await page.getByRole('button', { name: 'Buka chatbot' }).click()
+    }
+    for (const state of ['home', 'chat']) {
+      const single = await dimensions()
+      await input.fill('Baris pertama')
+      await input.press('End')
+      await input.press('Shift+Enter')
+      const twoLines = await dimensions()
+      assert.equal(twoLines.height - single.height, 24)
+      assert.equal(twoLines.buttonInset, single.buttonInset)
+      await input.fill(Array.from({ length: 14 }, (_, index) => `Baris ${index + 1}`).join('\n'))
+      const overflow = await dimensions()
+      assert.ok(overflow.scrollHeight > overflow.fieldHeight)
+      assert.ok(overflow.height > twoLines.height && overflow.height <= 158)
+      assert.ok(overflow.gap >= 8)
+      assert.equal(overflow.buttonInset, single.buttonInset)
+      await page.screenshot({ path: `.output/qa/composer-${overlay ? 'overlay' : 'web'}-${state}.png` })
+      await sendButton.click()
+      await page.getByRole('log').waitFor()
+      assert.equal(await input.inputValue(), '')
+      assert.equal((await dimensions()).height, single.height)
+    }
+  }
+})
+
 test('full page persists, reopens and deletes real conversations', async (t) => {
   const { page } = await open(t)
   await page.screenshot({ path: '.output/qa/web-home.png' })

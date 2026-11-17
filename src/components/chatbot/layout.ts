@@ -7,7 +7,7 @@ export const widgetClasses = [
   '[--idmc-motion-ease-out:cubic-bezier(0.22,_1,_0.36,_1)]',
   '[--idmc-widget-padding-inline:var(--idmc-space-4)] [--idmc-widget-padding-block:var(--idmc-space-4)]',
   '[--idmc-header-height:44px] [--idmc-header-action-size:30px] [--idmc-header-gap:var(--idmc-space-2)]',
-  '[--idmc-content-gap:var(--idmc-space-2)] [--idmc-composer-height:56px]',
+  '[--idmc-content-gap:var(--idmc-space-2)] [--idmc-composer-height:58px]',
   'mobile:[--idmc-widget-padding-inline:var(--idmc-space-3)]',
   'mobile:[--idmc-widget-padding-block:var(--idmc-space-3)]',
   'short:[--idmc-widget-padding-block:var(--idmc-space-2)] short:[--idmc-header-height:40px]',

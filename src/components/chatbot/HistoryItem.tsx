@@ -5,12 +5,13 @@ import type { ChatHistoryItem } from './types'
 export interface HistoryItemProps {
   item: ChatHistoryItem
   selected?: boolean
+  disabled?: boolean
   onSelect?: (id: string) => void
   /** Stagger only the entrance; changing selection does not replay it. */
   entranceIndex?: number
 }
 
-export function HistoryItem({ item, selected = false, onSelect, entranceIndex = 0 }: HistoryItemProps) {
+export function HistoryItem({ item, selected = false, disabled, onSelect, entranceIndex = 0 }: HistoryItemProps) {
   return (
     <li
       className="[animation:idmc-view-in_var(--idmc-motion-duration-content)_var(--idmc-motion-ease-out)_var(--idmc-history-delay)_backwards]"
@@ -18,12 +19,13 @@ export function HistoryItem({ item, selected = false, onSelect, entranceIndex = 
     >
       <button
         type="button"
+        disabled={disabled}
         className={cn(
           'idmc-history__item',
           'block [inline-size:100%] [padding:var(--idmc-space-2)_var(--idmc-space-3)] overflow-hidden [border:0]',
           '[border-radius:var(--idmc-radius-2)] [color:var(--idmc-color-neutral-900)]',
           '[font:var(--idmc-type-b3)] [letter-spacing:0] text-start text-ellipsis whitespace-nowrap',
-          'cursor-pointer',
+          'cursor-pointer disabled:cursor-wait disabled:opacity-50',
           '[transition:background-color_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out),_transform_var(--idmc-motion-duration-fast)_var(--idmc-motion-ease-out)]',
           '[&:active]:[transform:scale(0.99)]',
           selected

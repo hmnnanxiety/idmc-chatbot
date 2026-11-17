@@ -7,7 +7,7 @@ import type { ChatMessage, MessageRole } from './types'
 const CHAT_ERROR_MESSAGE =
   'Maaf, terjadi kesalahan saat menghubungi server. Silakan coba lagi.'
 
-/** In-memory request lifecycle only; closing still discards the conversation. */
+/** Owns the active conversation and its in-flight request. */
 export function useChatSession(requestReply: ChatTransport = sendChatMessage, initialMessages: ChatMessage[] = []) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
   const [isAssistantLoading, setIsAssistantLoading] = useState(false)
@@ -18,12 +18,18 @@ export function useChatSession(requestReply: ChatTransport = sendChatMessage, in
     setMessages((previous) => [...previous, { id, role, text, status }])
   }, [])
 
-  const resetConversation = useCallback(() => {
-    requestRef.current?.abort()
+  const cancelReply = useCallback((notice?: string) => {
+    if (!requestRef.current) return
+    requestRef.current.abort()
     requestRef.current = null
     setIsAssistantLoading(false)
-    setMessages([])
-  }, [])
+    if (notice) appendMessage('assistant', notice, 'error')
+  }, [appendMessage])
+
+  const replaceMessages = useCallback((next: ChatMessage[]) => {
+    cancelReply()
+    setMessages(next)
+  }, [cancelReply])
 
   const sendMessage = useCallback(async (value: string) => {
     const text = value.trim()
@@ -52,5 +58,5 @@ export function useChatSession(requestReply: ChatTransport = sendChatMessage, in
 
   useEffect(() => () => requestRef.current?.abort(), [])
 
-  return { messages, isAssistantLoading, sendMessage, resetConversation }
+  return { messages, isAssistantLoading, sendMessage, cancelReply, replaceMessages }
 }

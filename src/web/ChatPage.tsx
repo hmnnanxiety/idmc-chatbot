@@ -19,7 +19,7 @@ import { MessageList } from '../components/chatbot/MessageList'
 import { SuggestionList } from '../components/chatbot/SuggestionList'
 import { widgetClasses } from '../components/chatbot/layout'
 import { useChatSession } from '../components/chatbot/useChatSession'
-import { newConversation } from '../components/chatbot/conversation'
+import { conversationTitle, newConversation } from '../components/chatbot/conversation'
 import type { SavedConversation } from '../components/chatbot/conversation'
 import {
   CONVERSATION_PREFIX,
@@ -32,9 +32,6 @@ const suggestions = [
   'Statistik pendidikan',
   'Dashboard Koperasi',
 ]
-const titleOf = (conversation: SavedConversation) =>
-  conversation.messages.find((message) => message.role === 'user')?.text ||
-  'Chat baru'
 
 function Conversation({
   conversation,
@@ -223,15 +220,15 @@ function ChatWorkspace() {
                 <SidebarMenuButton
                   isActive={active.id === record.id}
                   onClick={() => select(record)}
-                  title={titleOf(record)}
+                  title={conversationTitle(record)}
                 >
                   <MessageSquare size={16} />
-                  <span>{titleOf(record)}</span>
+                  <span>{conversationTitle(record)}</span>
                 </SidebarMenuButton>
                 <button
                   type="button"
                   className="web-delete-chat"
-                  aria-label={`Hapus percakapan ${titleOf(record)}`}
+                  aria-label={`Hapus percakapan ${conversationTitle(record)}`}
                   onClick={() => remove(record)}
                 >
                   <Trash2 size={15} />

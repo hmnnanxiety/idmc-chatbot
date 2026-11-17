@@ -1,16 +1,17 @@
 import {
+  CONVERSATION_PREFIX,
   isConversation,
   newConversation,
 } from '../components/chatbot/conversation'
-import type { SavedConversation } from '../components/chatbot/conversation'
+import type { ConversationStore, SavedConversation } from '../components/chatbot/conversation'
 
-export const CONVERSATION_PREFIX = 'idmc-conversation-v1:'
+export { CONVERSATION_PREFIX }
 
-export function readConversations(): SavedConversation[] {
+export function readConversations(prefix = CONVERSATION_PREFIX): SavedConversation[] {
   const records: SavedConversation[] = []
   for (let index = 0; index < localStorage.length; index++) {
     const key = localStorage.key(index)
-    if (!key?.startsWith(CONVERSATION_PREFIX)) continue
+    if (!key?.startsWith(prefix)) continue
     try {
       const record: unknown = JSON.parse(localStorage.getItem(key) ?? 'null')
       if (isConversation(record) && record.messages.length) records.push(record)
@@ -19,6 +20,15 @@ export function readConversations(): SavedConversation[] {
     }
   }
   return records.sort((left, right) => right.updatedAt - left.updatedAt)
+}
+
+const PREVIEW_PREFIX = 'idmc-preview-conversation-v1:'
+
+export const previewConversationStore: ConversationStore = {
+  list: () => readConversations(PREVIEW_PREFIX),
+  save: (conversation) => localStorage.setItem(
+    PREVIEW_PREFIX + conversation.id, JSON.stringify(conversation),
+  ),
 }
 
 export function initialConversation(): {

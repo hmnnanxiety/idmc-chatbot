@@ -6,10 +6,11 @@ import { ChatLauncher } from './ChatLauncher'
 import { ConversationView } from './ConversationView'
 import { HistoryView } from './HistoryView'
 import { HomeView } from './HomeView'
-import type { ChatHistoryItem, ChatUser } from './types'
+import type { ChatUser } from './types'
 import { useChatSession } from './useChatSession'
 import type { ChatTransport } from '../../api/chatRequest'
-import { expandedChatUrl, newConversation } from './conversation'
+import { conversationTitle, expandedChatUrl, newConversation } from './conversation'
+import type { ConversationStore, SavedConversation } from './conversation'
 
 type ChatView = 'home' | 'chat' | 'history'
 
@@ -24,29 +25,42 @@ const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: r
 export interface ChatOverlayProps {
   user: ChatUser
   suggestions: string[]
-  /** Mock list for the History view. Omit or pass [] to see the empty state. */
-  historyItems?: ChatHistoryItem[]
+  conversationStore: ConversationStore
   /** Extension transport; the standalone preview defaults to its Vite API proxy. */
   requestReply?: ChatTransport
   expandedUrl?: string
 }
 
-/**
- * Floating chatbot. One bottom-right anchor is shared by both states: while
- * closed only the launcher is rendered, while open only the panel is (it grows
- * from the same corner and has its own close button in the header). The views
- * are plain React state, not routes, and nothing is persisted: once the panel
- * has closed, the conversation is discarded and the next open starts at Home.
- * Submitted text is shown immediately as the user's message and sent to the
- * FastAPI `/chat` endpoint; the typing indicator shows while that request is
- * pending, then the reply (or a simple error message) is appended.
- */
-export function ChatOverlay({ user, suggestions, historyItems = [], requestReply, expandedUrl }: ChatOverlayProps) {
+/** Floating chatbot with a conversation that survives closing the panel. */
+export function ChatOverlay({ user, suggestions, conversationStore, requestReply, expandedUrl }: ChatOverlayProps) {
   const [phase, setPhase] = useState<OverlayPhase>('closed')
   const [view, setView] = useState<ChatView>('home')
-  const { messages, isAssistantLoading, sendMessage, resetConversation } = useChatSession(requestReply)
-  // Visual selection in History only; no conversation is restored.
-  const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
+  const [active, setActive] = useState(newConversation)
+  const { messages, isAssistantLoading, sendMessage, cancelReply, replaceMessages } = useChatSession(requestReply, active.messages)
+  const [history, setHistory] = useState<SavedConversation[]>([])
+  const [historyError, setHistoryError] = useState('')
+
+  useEffect(() => {
+    if (isAssistantLoading || !messages.length || messages === active.messages) return
+    const record = { id: active.id, messages, updatedAt: Date.now() }
+
+    async function saveConversation() {
+      try {
+        await conversationStore.save(record)
+      } catch {
+        setHistoryError('Riwayat gagal disimpan di browser.')
+      } finally {
+        setHistory((previous) => {
+          if (previous.some((item) => item.id === record.id && item.updatedAt > record.updatedAt)) {
+            return previous
+          }
+          return [record, ...previous.filter((item) => item.id !== record.id)]
+            .sort((left, right) => right.updatedAt - left.updatedAt)
+        })
+      }
+    }
+    void saveConversation()
+  }, [active, messages, isAssistantLoading, conversationStore])
   const [expandError, setExpandError] = useState('')
   const maximize = expandedUrl ? () => {
     try {
@@ -63,21 +77,18 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
   // The view History was opened from, so Back returns to it. Written only when History opens.
   const previousViewRef = useRef<Exclude<ChatView, 'history'>>('home')
 
-  // Final step of closing: unmount the panel and reset to Home with no messages.
+  // Unmount the panel after its exit animation. Keep the active transcript.
   const finishClose = useCallback(() => {
-    resetConversation()
     setExpandError('')
     setPhase('closed')
-    setView('home')
-    setSelectedHistoryId(null)
-    previousViewRef.current = 'home'
-  }, [resetConversation])
+  }, [])
 
   // Start closing: play the exit animation first, or skip it for reduced motion.
   const requestClose = useCallback(() => {
+    cancelReply('Jawaban dihentikan saat chatbot ditutup. Kirim ulang pertanyaan untuk mencoba lagi.')
     if (prefersReducedMotion()) finishClose()
     else setPhase((current) => (current === 'open' ? 'closing' : current))
-  }, [finishClose])
+  }, [cancelReply, finishClose])
 
   // Home submit or suggestion click: send the text and switch to Conversation.
   const startConversation = (text: string) => {
@@ -85,12 +96,33 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
     setView('chat')
   }
 
-  const openHistory = () => {
+  const openHistory = async () => {
     if (view !== 'history') previousViewRef.current = view
     setView('history')
+    try {
+      const saved = await conversationStore.list()
+      setHistory((previous) => {
+        const records = new Map(saved.map((record) => [record.id, record]))
+        for (const record of previous) {
+          if ((records.get(record.id)?.updatedAt ?? 0) < record.updatedAt) records.set(record.id, record)
+        }
+        return Array.from(records.values()).sort((left, right) => right.updatedAt - left.updatedAt)
+      })
+    } catch {
+      setHistoryError('Riwayat gagal dibuka dari browser.')
+    }
   }
 
   const closeHistory = () => setView(previousViewRef.current)
+
+  const openConversation = (record: SavedConversation) => {
+    if (isAssistantLoading) return
+    if (record.id !== active.id) {
+      setActive(record)
+      replaceMessages(record.messages)
+    }
+    setView(record.messages.length ? 'chat' : 'home')
+  }
 
   const handlePanelAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
     // Ignore bubbled events from children (e.g. a message's entrance animation).
@@ -210,9 +242,15 @@ export function ChatOverlay({ user, suggestions, historyItems = [], requestReply
             <HistoryView
               onMaximize={maximize}
               maximizeDisabled={isAssistantLoading}
-              items={historyItems}
-              selectedId={selectedHistoryId}
-              onSelect={setSelectedHistoryId}
+              items={history.map((record) => ({ id: record.id, title: conversationTitle(record) }))}
+              selectedId={active.id}
+              onSelect={(id) => {
+                const record = history.find((item) => item.id === id)
+                if (record) openConversation(record)
+              }}
+              onNewChat={() => openConversation(newConversation())}
+              pending={isAssistantLoading}
+              error={historyError}
               onBack={closeHistory}
               onClose={requestClose}
             />

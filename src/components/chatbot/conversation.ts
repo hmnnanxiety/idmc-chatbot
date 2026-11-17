@@ -6,6 +6,17 @@ export interface SavedConversation {
   updatedAt: number
 }
 
+export interface ConversationStore {
+  list: () => SavedConversation[] | Promise<SavedConversation[]>
+  save: (conversation: SavedConversation) => void | Promise<void>
+}
+
+export const CONVERSATION_PREFIX = 'idmc-conversation-v1:'
+
+export function conversationTitle(conversation: SavedConversation) {
+  return conversation.messages.find((message) => message.role === 'user')?.text || 'Chat baru'
+}
+
 export function isConversation(value: unknown): value is SavedConversation {
   if (!value || typeof value !== 'object') return false
   const record = value as SavedConversation
